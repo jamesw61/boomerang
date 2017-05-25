@@ -4,11 +4,20 @@
 .resultsOne{
 	background-color: #ccc;
 	height: 600px;
+	min-height: 80px;
+	height: auto;
 }
 .resultsTwo{
+	min-height: 80px;
+	height: auto;
 
 }
 .favorites{
 	background-color: #c88;
 	height: 600px;
+}
+
+.well {
+	min-height: 80px
+	height: auto;
 }
