@@ -24,7 +24,7 @@
              console.log(response.results[0].jobtitle);
              //empties the container of whatever was in it before - maybe we don't do this?
              // but then we'll have to prepend below instead of appending
-             $('#resultsTwo').empty()
+             $('.resultsTwo').empty()
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
@@ -33,7 +33,7 @@
                  //put the jobtitle in the well
                  newWell.html(jobTitle);
                  //put the well in the results container
-                 $('#resultsTwo').append(newWell);
+                 $('.resultsTwo').append(newWell);
              }
          });
      }
