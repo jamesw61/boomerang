@@ -7,6 +7,7 @@
          // this URL has james's Indeed.com publisher key
          // you need format=json, and the version v=2 in the URL
          // I set the # of results to 5 but we can change it
+         // if you get ERR_BLOCKED_BY_CLIENT it is probably because of adblockers
          newQueryURL = "http://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
          $.ajax({
              url: newQueryURL,
@@ -42,10 +43,11 @@
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
          makeAjaxRequest();
+         makeSalaryAjaxRequest();
      });
 
      function makeTeleportAjaxRequest() {
-     		// this api gets the city scores from teleport
+     		// this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
 
          $.ajax({
@@ -62,6 +64,7 @@
                  var categoryScore = response.categories[j].score_out_of_10;
                  var newWell = $('<div class="well"></div>');
                  var newH = $('<h3></h3>');
+                 //need to cut off most of the decimal places of categoryScore
                  newH.html(categoryTitle + ":   " + categoryScore);                 
                  newWell.addClass('text-center').append(newH);
                  $('#resultsOne').append(newWell);
@@ -72,7 +75,25 @@
      }
 
 
+     function makeSalaryAjaxRequest() {
+     	//teleport has a separate api for salaries
+         var salaryURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/salaries/";
 
+         $.ajax({
+             url: salaryURL,
+             method: "GET"
+
+         }).done(function(response) {
+             console.log(response);
+             //I used the position in the array for web developer             
+             var newJobTitle = response.salaries[51].job.title;
+             var salary = response.salaries[51].salary_percentiles.percentile_50;
+             var roundedSalary = Math.round(salary);
+             console.log(roundedSalary);
+       		$('#salary').html(newJobTitle + ":   $" + roundedSalary);
+
+         });
+     }
 
 
 
