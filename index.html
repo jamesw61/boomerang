@@ -6,12 +6,27 @@
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="assets/style.css">
 	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+	
+                                    
 </head>
 <body>
 <div class="container-fluid">
-	<div class="jumbotron text-center header"><h1>Find Me Food</h1>
-		<div class="form-group">Type your search here:
-			<input type="text" name="searchInput">
+	<div class="jumbotron text-center header"><h1>Find Me a Job</h1>
+		<div class="row">
+			<text>City</text>
+			<select>
+				<option value="phoenix">Phoenix</option>
+				<option value="chandler">Chandler</option>
+				<option value="gilbert">Gilbert</option>
+			</select>
+			<text>Job Title</text>
+			<select>
+				<option value="webDeveloper">Web Developer</option>
+				<option value="jrWebDeveloper">Jr Web Developer</option>
+				<option value="frontEndDeveloper">Front End Developer</option>
+				<option value="backEndDeveloper">Back End Developer</option>
+			</select>
+			<br><br>
 			<button type="submit" id="search" class="btn btn-regular">Search</button>
 		</div>
 	</div>

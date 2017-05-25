@@ -7,6 +7,6 @@ var resultsTwo = $("#resultsTwo");
 var resultsArray
 
 //Creates the wells in the resultsOne for the search
-$(search).on("click", function({
+// $(search).on("click", function({
 
-}))
+// }))
