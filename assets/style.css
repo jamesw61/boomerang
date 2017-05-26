@@ -1,45 +1,67 @@
-
-
-.header{
-	background-color: #88c;
+body {
+	background-color: 	#ddd;
+	
 }
-.resultsOne{
-	padding-top: 20px;
-	background-color: #ccc;
-	height: 600px;
-	min-height: 80px;
-	height: auto;
-}
-.resultsTwo{
-	padding-top: 20px;
-	background-color: #ddd;
-	min-height: 180px;
-	height: auto;
 
+.container-fluid {
+	width: 100%;
 }
-.favorites{
-	padding-top: 20px;
-	background-color: #bbb;
-	min-height: 180px;
-	height: auto;
+
+header {
+    margin-bottom: 10px;
+}
+
+.resultsOne {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    height: 600px;
+    min-height: 80px;
+    height: auto;
+    margin-left: 10px;
+   
+}
+
+.resultsTwo {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    min-height: 180px;
+    height: auto;
+    margin-left: 10px;
+}
+
+.favorites {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    min-height: 180px;
+    height: auto;
+    margin-left: 10px;
 }
 
 .well {
-	min-height: 80px
-	height: auto;
+    min-height: 80px, 
+    color: white;
+    height: auto;
+    background-color: #eee;
+}
+
+.header {
+	width: 100%;
+    color: white;
+    background-size: cover;
+    min-height: 400px;
+    background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
+}
+
+button,
+input {
+    color: black;
 }
 
 .jumbotron {
-	color: white;
-	background-size: cover;
-	background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
+	margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-button, input {
-	color: black;
+#save {
+	margin-bottom: 10px;
 }
-
-.jumbo {
-	background-color: rgba(0, 0, 0, 0.5);
-	
-	}

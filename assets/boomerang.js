@@ -1,8 +1,46 @@
  $(document).ready(function() {
+     var config = {
+         apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
+         authDomain: "bacon-525e9.firebaseapp.com",
+         databaseURL: "https://bacon-525e9.firebaseio.com",
+         projectId: "bacon-525e9",
+         storageBucket: "bacon-525e9.appspot.com",
+         messagingSenderId: "724409226390"
+     };
+     firebase.initializeApp(config);
+
+     var database = firebase.database();
+        //I'm having trouble with the Dragula library...
+        //Currently, if you click save, the first result in the middle column(left-defaults) will push to firebase
+        //the results that appear on the loading of the page are from my(James) firebase
+        //I can not get data to push to firebase AFTER being moved to the right(right-defaults) column.  I can move it
+        //to the right and back into the middle and it will push but I can't get the left column to push
+        //
+      $("#save").on("click", function() {
+                var xx = document.getElementById("left-defaults").firstChild.innerHTML;
+                console.log(xx);
+                var jobTitleFb = $('#right-defaults div:first-child').html();
+                console.log(jobTitleFb);
+             database.ref('jobs').push({
+                jobTitle:xx
+
+             });
+      });
+
+
+      database.ref('jobs').on("child_added", function(snapshot){
+            var storedJobs = snapshot.val();
+            var storedJobTitle = storedJobs.jobTitle;
+            var newJobWell = $('<div class="well"></div>');
+            newJobWell.html(storedJobTitle);
+            $('.savedJobs').append(newJobWell);
+      });
+
+
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
-     
+
 
      function makeAjaxRequest() {
          // this URL has james's Indeed.com publisher key
@@ -32,7 +70,8 @@
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
                  //put the jobtitle in the well
-                 newWell.html(jobTitle);
+                 newWell.html(jobTitle).val(jobTitle);
+                 
                  //put the well in the results container
                  $('.resultsTwo').append(newWell);
              }
@@ -50,7 +89,7 @@
      });
 
      function makeTeleportAjaxRequest() {
-     		// this api gets the city scores from teleport - no key needed
+         // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
 
          $.ajax({
@@ -68,18 +107,16 @@
                  var newWell = $('<div class="well"></div>');
                  var newH = $('<h3></h3>');
                  //need to cut off most of the decimal places of categoryScore
-                 newH.html(categoryTitle + ":   " + categoryScore);                 
+                 newH.html(categoryTitle + ":   " + categoryScore);
                  newWell.addClass('text-center').append(newH);
                  $('#resultsOne').append(newWell);
              }
-
-
          });
      }
 
 
      function makeSalaryAjaxRequest() {
-     	//teleport has a separate api for salaries
+         //teleport has a separate api for salaries
          var salaryURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/salaries/";
 
          $.ajax({
@@ -93,13 +130,12 @@
              var salary = response.salaries[51].salary_percentiles.percentile_50;
              var roundedSalary = Math.round(salary);
              // console.log(roundedSalary);
-       		$('#salary').html(newJobTitle + ":   $" + roundedSalary);
-
+             $('#salary').html(newJobTitle + ":   $" + roundedSalary);
          });
      }
 
      function getPriceOfBeer() {
-            var beerURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/details/";
+         var beerURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/details/";
          $.ajax({
              url: beerURL,
              method: "GET"
@@ -107,33 +143,23 @@
          }).done(function(response) {
              // console.log(response);
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
-             $('#beer').html("Avg. price of beer:  $" + beerPrice);                      
-            
-            // $('#salary').html(newJobTitle + ":   $" + roundedSalary);
-
+             $('#beer').html("Avg. price of beer:  $" + beerPrice);
          });
-
      }
 
      function getImage() {
-        var imageURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/"
-        $.ajax({
+        //gets a city image from teleport and puts it in the header
+         var imageURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/"
+         $.ajax({
              url: imageURL,
              method: "GET"
 
          }).done(function(response) {
              console.log(response);
              var picURL = response.photos[0].image.web;
-             var backImg = "url(" + picURL + ")";
-             // $('.jumbotron').css('background-image', backImg);
-             $('.jumbotron').css('background-image', 'url(' + picURL + ')');
-             
-
+             $('.header').css('background-image', 'url(' + picURL + ')');
          });
 
      }
-
-
-
 
  });
