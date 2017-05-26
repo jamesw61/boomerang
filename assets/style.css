@@ -1,23 +1,45 @@
+
+
 .header{
 	background-color: #88c;
 }
 .resultsOne{
+	padding-top: 20px;
 	background-color: #ccc;
 	height: 600px;
 	min-height: 80px;
 	height: auto;
 }
 .resultsTwo{
-	min-height: 80px;
+	padding-top: 20px;
+	background-color: #ddd;
+	min-height: 180px;
 	height: auto;
 
 }
 .favorites{
-	background-color: #c88;
-	height: 600px;
+	padding-top: 20px;
+	background-color: #bbb;
+	min-height: 180px;
+	height: auto;
 }
 
 .well {
 	min-height: 80px
 	height: auto;
 }
+
+.jumbotron {
+	color: white;
+	background-size: cover;
+	background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
+}
+
+button, input {
+	color: black;
+}
+
+.jumbo {
+	background-color: rgba(0, 0, 0, 0.5);
+	
+	}

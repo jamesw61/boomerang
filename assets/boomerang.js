@@ -1,7 +1,8 @@
  $(document).ready(function() {
 
-     var city = "";
-     var occupation = "";
+     var city = "phoenix";
+     var occupation = "junior+web+developer";
+     
 
      function makeAjaxRequest() {
          // this URL has james's Indeed.com publisher key
@@ -17,11 +18,11 @@
              // this crossDomain key eliminated the need for the cross origin chrome extension
              crossDomain: true
          }).done(function(response) {
-             console.log(response);
+             // console.log(response);
              // I only got the jobtitle for now
              // I would imagine we'll also want the company(.company),
              // the description (.snippet), and the url (.url)
-             console.log(response.results[0].jobtitle);
+             // console.log(response.results[0].jobtitle);
              //empties the container of whatever was in it before - maybe we don't do this?
              // but then we'll have to prepend below instead of appending
              $('.resultsTwo').empty()
@@ -44,6 +45,8 @@
          makeTeleportAjaxRequest();
          makeAjaxRequest();
          makeSalaryAjaxRequest();
+         getPriceOfBeer();
+         getImage();
      });
 
      function makeTeleportAjaxRequest() {
@@ -55,7 +58,7 @@
              method: "GET"
 
          }).done(function(response) {
-             console.log(response);
+             // console.log(response);
              //empties the containing div
              $('#resultsOne').empty();
              //loops through the categories and makes a well for each- we should maybe get rid of some of these
@@ -84,15 +87,50 @@
              method: "GET"
 
          }).done(function(response) {
-             console.log(response);
+             // console.log(response);
              //I used the position in the array for web developer             
              var newJobTitle = response.salaries[51].job.title;
              var salary = response.salaries[51].salary_percentiles.percentile_50;
              var roundedSalary = Math.round(salary);
-             console.log(roundedSalary);
+             // console.log(roundedSalary);
        		$('#salary').html(newJobTitle + ":   $" + roundedSalary);
 
          });
+     }
+
+     function getPriceOfBeer() {
+            var beerURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/details/";
+         $.ajax({
+             url: beerURL,
+             method: "GET"
+
+         }).done(function(response) {
+             // console.log(response);
+             var beerPrice = response.categories[3].data[6].currency_dollar_value;
+             $('#beer').html("Avg. price of beer:  $" + beerPrice);                      
+            
+            // $('#salary').html(newJobTitle + ":   $" + roundedSalary);
+
+         });
+
+     }
+
+     function getImage() {
+        var imageURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/"
+        $.ajax({
+             url: imageURL,
+             method: "GET"
+
+         }).done(function(response) {
+             console.log(response);
+             var picURL = response.photos[0].image.web;
+             var backImg = "url(" + picURL + ")";
+             // $('.jumbotron').css('background-image', backImg);
+             $('.jumbotron').css('background-image', 'url(' + picURL + ')');
+             
+
+         });
+
      }
 
 

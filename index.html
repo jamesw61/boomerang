@@ -1,38 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Basic Framework</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="assets/style.css">
-	<link rel="stylesheet" type="text/css" href="assets/dragula.css">
-	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
-</head>
-<body>
-<div class="container-fluid">
-	<div class="jumbotron text-center header"><h1>Find Me Food</h1>
-		<div class="form-group">Type your search here:
-			<input type="text" id="searchInput">
-			<button  id="search" class="btn btn-regular">Search</button>
-		</div>
-		<h2 id="salary"><h2>
-	</div>
-	<div class="col-md-4 resultsOne" id="resultsOne">This will hold the results one
-		<div class="well"></div>
-		<div class="well"></div>
-		<div class="well"></div>
-		<div class="well"></div>
-	</div>
-	<div class="col-md-4 resultsTwo container" id="left-defaults">This will hold the results two
-		<div class="well"></div>
-	</div>
-	<div class="col-md-4 favorites container" id="right-defaults">This will hold the sidebar for the favorites
-		<div class="well"></div>
-	</div>
-	</div>
-<script type="text/javascript" src="assets/boomerang.js"></script>
-<script type="text/javascript" src="assets/dragula.js"></script>
-<script type="text/javascript" src="assets/dragboom.min.js"></script>
-</body>
-</html>
 
+<head>
+    <title>Basic Framework</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/dragula.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="jumbotron text-center header">
+        
+        
+            <div class="well jumbo">
+                <h1>Relocation Snapshot</h1>
+            </div>
+            <div class="well jumbo">
+                <div class="form-group">Type your search here:
+                    <input type="text" id="searchInput">
+                    <button id="search" class="btn btn-regular">Search</button>
+                </div>
+            </div>
+            <div class="well jumbo">
+                <h2 id="salary"></h2>
+                <h3 id="beer"></h3>
+            
+            </div>
+        </div>
+        <div class="col-md-4 resultsOne" id="resultsOne">This will hold the results one
+            <div class="well"></div>
+            <div class="well"></div>
+            <div class="well"></div>
+            <div class="well"></div>
+        </div>
+        <!-- dragula requires an id of left(or right)-defaults and a class of container -->
+        <div class="col-md-4 resultsTwo container" id="left-defaults">This will hold the results two
+            <div class="well"></div>
+        </div>
+        <div class="col-md-4 favorites container" id="right-defaults">This will hold the sidebar for the favorites
+            <div class="well"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="assets/boomerang.js"></script>
+    <script type="text/javascript" src="assets/dragula.js"></script>
+    <script type="text/javascript" src="assets/dragboom.min.js"></script>
+</body>
+
+</html>
