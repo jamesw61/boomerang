@@ -9,40 +9,41 @@
     <link rel="stylesheet" type="text/css" href="assets/dragula.css">
     <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 </head>
 
 <body>
-	<header class="text-center header">
-            <div class="jumbotron jumbo col-md-6 col-md-offset-3">
-                <h1>Relocation Snapshot</h1>
-                <div class="form-group">Type your search here:
-                    <input type="text" id="searchInput">
-                    <button id="search" class="btn btn-regular">Search</button>
-                </div>
-                <h2 id="salary"></h2>
-                <h3 id="beer"></h3>
+    <header class="text-center header">
+        <div class="jumbotron jumbo col-md-6 col-md-offset-3">
+            <h1>Relocation Snapshot</h1>
+            <div class="form-group">Type your search here:
+                <input type="text" id="searchInput">
+                <button id="search" class="btn btn-regular">Search</button>
             </div>
-        </header>
+            <h2 id="salary"></h2>
+            <h3 id="beer"></h3>
+        </div>
+    </header>
     <div class="container-fluid">
-        
         <div class="col-md-1"></div>
         <div class="col-md-3 resultsOne" id="resultsOne">
-            <div class="well"></div>
+            <div class="well">
+            
+            </div>
             <div class="well"></div>
             <div class="well"></div>
             <div class="well"></div>
         </div>
-        <!-- dragula requires an id of left(or right)-defaults and a class of container (I think) -->
-        <div class="col-md-3 resultsTwo container" id="left-defaults">
+        <div class="col-md-3 resultsTwo" id="resultsTwo">
             <div class="well"></div>
         </div>
-        <div class="col-md-3 favorites container savedJobs" id="right-defaults">
+        <div class="col-md-3 favorites" id="savedJobs">
             <button id="save" class="btn btn-regular">Save</button>
         </div>
     </div>
+    <canvas id="myChart"></canvas>
     <script type="text/javascript" src="assets/boomerang.js"></script>
     <script type="text/javascript" src="assets/dragula.js"></script>
-    <script type="text/javascript" src="assets/dragboom.min.js"></script>
 </body>
 
 </html>

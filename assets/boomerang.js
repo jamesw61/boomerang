@@ -10,36 +10,47 @@
      firebase.initializeApp(config);
 
      var database = firebase.database();
-        //I'm having trouble with the Dragula library...
-        //Currently, if you click save, the first result in the middle column(left-defaults) will push to firebase
-        //the results that appear on the loading of the page are from my(James) firebase
-        //I can not get data to push to firebase AFTER being moved to the right(right-defaults) column.  I can move it
-        //to the right and back into the middle and it will push but I can't get the left column to push
-        //
-      $("#save").on("click", function() {
-                var xx = document.getElementById("left-defaults").firstChild.innerHTML;
-                console.log(xx);
-                var jobTitleFb = $('#right-defaults div:first-child').html();
-                console.log(jobTitleFb);
-             database.ref('jobs').push({
-                jobTitle:xx
+     //I'm having trouble with the Dragula library...
+     //I can get the middle column(resultsTwo) to push to firebase even after moving it to the right and back
+     //but we need the right column to push
+     //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
+     // on the load of the page are from my(james) firebase.
+     $("#save").on("click", function() {
 
-             });
-      });
+         var jobTitleFb = $('#resultsTwo div:first-child').html();
+         console.log(jobTitleFb); // this always comes back as undefined if you change the above 
+         //selector to #savedJobs
+         // database.ref('jobs').push({
+         //    jobTitle:jobTitleFb
+         // });
+     });
 
-
-      database.ref('jobs').on("child_added", function(snapshot){
-            var storedJobs = snapshot.val();
-            var storedJobTitle = storedJobs.jobTitle;
-            var newJobWell = $('<div class="well"></div>');
-            newJobWell.html(storedJobTitle);
-            $('.savedJobs').append(newJobWell);
-      });
-
+     //This works -- values come back from firebase on to our page
+     database.ref('jobs').on("child_added", function(snapshot) {
+         var storedJobs = snapshot.val();
+         var storedJobTitle = storedJobs.jobTitle;
+         var newJobWell = $('<div class="well"></div>');
+         newJobWell.html(storedJobTitle);
+         $('#savedJobs').append(newJobWell);
+     });
+     //******************************copied Dragula code*****************************************
+     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
+         .on('drag', function(el) {
+             el.className = el.className.replace('ex-moved', '');
+         }).on('drop', function(el) {
+             el.className += ' ex-moved';
+         }).on('over', function(el, container) {
+             container.className += ' ex-over';
+         }).on('out', function(el, container) {
+             container.className = container.className.replace('ex-over', '');
+         });
+     //*****************************************************************************************
 
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
+     var cityCategoryTitles = [];
+     var cityData = [];
 
 
      function makeAjaxRequest() {
@@ -71,7 +82,7 @@
                  var newWell = $('<div class="well"></div>');
                  //put the jobtitle in the well
                  newWell.html(jobTitle).val(jobTitle);
-                 
+
                  //put the well in the results container
                  $('.resultsTwo').append(newWell);
              }
@@ -79,7 +90,9 @@
      }
 
      $("#search").on('click', function() {
+         //commented out the line below for now so I don't have to type in a search term every time
          city = $('#searchInput').val().trim();
+
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
          makeAjaxRequest();
@@ -91,6 +104,9 @@
      function makeTeleportAjaxRequest() {
          // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
+         $('#myChart').empty();
+            cityCategoryTitles.length = 0;
+            cityData.length = 0;
 
          $.ajax({
              url: cityscoresURL,
@@ -103,14 +119,21 @@
              //loops through the categories and makes a well for each- we should maybe get rid of some of these
              for (var j = 0; j < response.categories.length; j++) {
                  var categoryTitle = response.categories[j].name;
+                 cityCategoryTitles.push(categoryTitle);
                  var categoryScore = response.categories[j].score_out_of_10;
+                 cityData.push(categoryScore);
                  var newWell = $('<div class="well"></div>');
+
+
                  var newH = $('<h3></h3>');
                  //need to cut off most of the decimal places of categoryScore
                  newH.html(categoryTitle + ":   " + categoryScore);
                  newWell.addClass('text-center').append(newH);
                  $('#resultsOne').append(newWell);
              }
+             makeChart();
+            
+
          });
      }
 
@@ -130,7 +153,7 @@
              var salary = response.salaries[51].salary_percentiles.percentile_50;
              var roundedSalary = Math.round(salary);
              // console.log(roundedSalary);
-             $('#salary').html(newJobTitle + ":   $" + roundedSalary);
+             $('#salary').html("Median " + newJobTitle + " Salary:   $" + roundedSalary);
          });
      }
 
@@ -148,7 +171,7 @@
      }
 
      function getImage() {
-        //gets a city image from teleport and puts it in the header
+         //gets a city image from teleport and puts it in the header
          var imageURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/"
          $.ajax({
              url: imageURL,
@@ -161,5 +184,32 @@
          });
 
      }
+
+
+//**************Chartjs******************************
+//might have to reset the canvas to get rid of flicker
+    function makeChart() {
+     var ctx = document.getElementById('myChart').getContext('2d');
+     var chart = new Chart(ctx, {
+         // The type of chart we want to create
+         type: 'bar',
+
+         // The data for our dataset
+         data: {
+             labels: cityCategoryTitles,
+             datasets: [{
+                 label: city,
+                 backgroundColor: 'rgb(255, 99, 132)',
+                 borderColor: 'rgb(255, 99, 132)',
+                 data: cityData,
+             }]
+         },
+
+         // Configuration options go here
+         options: {}
+     });
+    }
+//****************************************************************
+
 
  });
