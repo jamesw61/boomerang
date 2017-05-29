@@ -1,4 +1,10 @@
  $(document).ready(function() {
+
+     var city = "phoenix";
+     var occupation = "junior+web+developer";
+     var cityCategoryTitles = [];
+     var cityData = [];
+
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
          authDomain: "bacon-525e9.firebaseapp.com",
@@ -46,14 +52,7 @@
          });
      //*****************************************************************************************
 
-
-     var city = "phoenix";
-     var occupation = "junior+web+developer";
-     var cityCategoryTitles = [];
-     var cityData = [];
-
-
-     function makeAjaxRequest() {
+     function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
          // you need format=json, and the version v=2 in the URL
          // I set the # of results to 5 but we can change it
@@ -95,7 +94,7 @@
 
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
-         makeAjaxRequest();
+         makeIndeedAjaxRequest();
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
@@ -105,8 +104,8 @@
          // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
          $('#myChart').empty();
-            cityCategoryTitles.length = 0;
-            cityData.length = 0;
+         cityCategoryTitles.length = 0;
+         cityData.length = 0;
 
          $.ajax({
              url: cityscoresURL,
@@ -121,18 +120,18 @@
                  var categoryTitle = response.categories[j].name;
                  cityCategoryTitles.push(categoryTitle);
                  var categoryScore = response.categories[j].score_out_of_10;
-                 cityData.push(categoryScore);
+                 //this cuts off the decimal places - I don't know if this is the best way
+                 var roundedScore = Math.floor(categoryScore * 10);
+                 var newCatScore = roundedScore / 10;
+                 cityData.push(newCatScore);
                  var newWell = $('<div class="well"></div>');
-
-
                  var newH = $('<h3></h3>');
-                 //need to cut off most of the decimal places of categoryScore
-                 newH.html(categoryTitle + ":   " + categoryScore);
+                 newH.html(categoryTitle + ":   " + newCatScore);
                  newWell.addClass('text-center').append(newH);
                  $('#resultsOne').append(newWell);
              }
              makeChart();
-            
+
 
          });
      }
@@ -186,30 +185,38 @@
      }
 
 
-//**************Chartjs******************************
-//might have to reset the canvas to get rid of flicker
-    function makeChart() {
-     var ctx = document.getElementById('myChart').getContext('2d');
-     var chart = new Chart(ctx, {
-         // The type of chart we want to create
-         type: 'bar',
+     //**************Chartjs******************************
+     //had to reset the canvas to get rid of flicker
 
-         // The data for our dataset
-         data: {
-             labels: cityCategoryTitles,
-             datasets: [{
-                 label: city,
-                 backgroundColor: 'rgb(255, 99, 132)',
-                 borderColor: 'rgb(255, 99, 132)',
-                 data: cityData,
-             }]
-         },
+     function makeChart() {
+        $('#chart').empty();
+        var newCanvas = $('<canvas id="myChart" height="50px"></canvas>');
+        //I inserted html - is appending better?
+        $('#chart').html(newCanvas);
+         var ctx = document.getElementById('myChart').getContext('2d');
+         var chart = new Chart(ctx, {
+             // The type of chart we want to create
+             type: 'bar',
 
-         // Configuration options go here
-         options: {}
-     });
-    }
-//****************************************************************
+             // The data for our dataset
+             data: {
+                 labels: cityCategoryTitles,
+                 datasets: [{
+                     label: city,
+                     backgroundColor: 'rgb(12, 32, 214)',
+                     borderColor: 'rgb(0, 0, 0)',
+                     data: cityData,
+                 }]
+             },
+
+             // Configuration options go here
+             options: {
+
+             }
+         });
+        
+     }
+     //****************************************************************
 
 
  });
