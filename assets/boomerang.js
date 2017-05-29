@@ -2,8 +2,9 @@
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
-     var cityCategoryTitles = [];
-     var cityData = [];
+     var cityCategoryTitles = [];   // pushed from teleport
+     var cityData = [];             // also from teleport
+     var barColorArray = [];        // to hold rgb values for chartjs
 
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
@@ -16,6 +17,7 @@
      firebase.initializeApp(config);
 
      var database = firebase.database();
+     $('#chart').hide();
      //I'm having trouble with the Dragula library...
      //I can get the middle column(resultsTwo) to push to firebase even after moving it to the right and back
      //but we need the right column to push
@@ -90,7 +92,7 @@
 
      $("#search").on('click', function() {
          //commented out the line below for now so I don't have to type in a search term every time
-         city = $('#searchInput').val().trim();
+         // city = $('#searchInput').val().trim();
 
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
@@ -104,8 +106,10 @@
          // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
          $('#myChart').empty();
+         //resets the arrays 
          cityCategoryTitles.length = 0;
          cityData.length = 0;
+         barColorArray.length = 0;
 
          $.ajax({
              url: cityscoresURL,
@@ -115,7 +119,7 @@
              // console.log(response);
              //empties the containing div
              $('#resultsOne').empty();
-             //loops through the categories and makes a well for each- we should maybe get rid of some of these
+             //loops through the categories and makes a well for each - maybe we should get rid of some of these
              for (var j = 0; j < response.categories.length; j++) {
                  var categoryTitle = response.categories[j].name;
                  cityCategoryTitles.push(categoryTitle);
@@ -124,13 +128,23 @@
                  var roundedScore = Math.floor(categoryScore * 10);
                  var newCatScore = roundedScore / 10;
                  cityData.push(newCatScore);
+                 //************************************************************************************************  
+                 //pushes rgb codes to an array for each score              
+                 if (newCatScore > 6.9) {
+                     barColorArray.push('rgb(69, 244, 66)');
+                 } else if (newCatScore < 4.0) {
+                     barColorArray.push('rgb(255, 0, 0)');
+                 } else {
+                     barColorArray.push('rgb(12, 76, 178)');
+                 }
+                 //******************************************************************************************************************
                  var newWell = $('<div class="well"></div>');
                  var newH = $('<h3></h3>');
                  newH.html(categoryTitle + ":   " + newCatScore);
                  newWell.addClass('text-center').append(newH);
                  $('#resultsOne').append(newWell);
              }
-             makeChart();
+             makeChart();  //function that makes the chartjs chart
 
 
          });
@@ -189,34 +203,53 @@
      //had to reset the canvas to get rid of flicker
 
      function makeChart() {
-        $('#chart').empty();
-        var newCanvas = $('<canvas id="myChart" height="50px"></canvas>');
-        //I inserted html - is appending better?
-        $('#chart').html(newCanvas);
+         $('#chart').empty().show();
+
+         var newCanvas = $('<canvas id="myChart" height="100px"></canvas>');
+         //I inserted html - is appending better?
+         $('#chart').html(newCanvas);
          var ctx = document.getElementById('myChart').getContext('2d');
          var chart = new Chart(ctx, {
              // The type of chart we want to create
-             type: 'bar',
+             type: 'horizontalBar',
 
-             // The data for our dataset
              data: {
                  labels: cityCategoryTitles,
                  datasets: [{
                      label: city,
-                     backgroundColor: 'rgb(12, 32, 214)',
+                     backgroundColor: barColorArray,
                      borderColor: 'rgb(0, 0, 0)',
                      data: cityData,
                  }]
              },
 
-             // Configuration options go here
              options: {
+                 scales: {
+                     xAxes: [{
+                         ticks: {
+                            // this will make the x axis start at 0
+                             // beginAtZero: true
+                         }
+                     }]
+                 }
+
 
              }
          });
-        
+
+
      }
      //****************************************************************
+
+
+
+
+
+
+
+
+
+
 
 
  });
