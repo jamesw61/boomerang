@@ -7,7 +7,6 @@
      var barColorArray = [];        // to hold rgb values for chartjs
 
 
-
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
          authDomain: "bacon-525e9.firebaseapp.com",
@@ -34,7 +33,6 @@
          //    jobTitle:jobTitleFb
          // });
      });
->>>>>>> 57cbb6cd2908008b07af92ed86f9e7154434ebed
 
      //This works -- values come back from firebase on to our page
      database.ref('jobs').on("child_added", function(snapshot) {
@@ -184,6 +182,8 @@
              // console.log(response);
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
+             var avgHigh = response.categories[2].data[5].string_value;
+             $('#temp').html("Avg. temerature high: " + avgHigh);
          });
      }
 
