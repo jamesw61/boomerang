@@ -232,6 +232,11 @@
                              // beginAtZero: true
                          },
                          barPercentage: 0.3
+                     }],
+                     yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
                      }]
                  }
 
