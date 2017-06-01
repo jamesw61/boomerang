@@ -1,14 +1,69 @@
-.header{
-	background-color: #88c;
+body {
+	/*background-color: 	#ddd;*/
+	
 }
-.resultsOne{
-	background-color: #ccc;
-	height: 600px;
-}
-.resultsTwo{
 
+.container-fluid {
+	width: 100%;
 }
-.favorites{
-	background-color: #c88;
-	height: 600px;
+
+header {
+    margin-bottom: 10px;
 }
+
+.resultsOne {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    height: 600px;
+    min-height: 80px;
+    height: auto;
+    margin-left: 10px;
+   
+}
+
+.resultsTwo {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    min-height: 180px;
+    height: auto;
+    margin-left: 10px;
+}
+
+.favorites {
+    padding-top: 20px;
+    background-color: 	#aaa;
+    min-height: 180px;
+    height: auto;
+    margin-left: 10px;
+}
+
+.well {
+    min-height: 80px, 
+    color: white;
+    height: auto;
+    background-color: #eee;
+}
+
+.header {
+	width: 100%;
+    color: white;
+    background-size: cover;
+    min-height: 400px;
+    background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
+}
+
+button,
+input {
+    color: black;
+}
+
+.jumbotron {
+	margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#save {
+	margin-bottom: 10px;
+}
+
+
