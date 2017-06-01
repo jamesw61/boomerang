@@ -40,6 +40,7 @@
          var newJobWell = $('<div class="well"></div>');
          newJobWell.html(storedJobTitle);
          $('#savedJobs').append(newJobWell);
+         
      });
      //******************************copied Dragula code*****************************************
      dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -92,7 +93,7 @@
 
      $("#search").on('click', function() {
          //commented out the line below for now so I don't have to type in a search term every time
-         // city = $('#searchInput').val().trim();
+         city = $('#searchInput').val().trim();
 
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
@@ -142,7 +143,7 @@
                  var newH = $('<h3></h3>');
                  newH.html(categoryTitle + ":   " + newCatScore);
                  newWell.addClass('text-center').append(newH);
-                 $('#resultsOne').append(newWell);
+                 // $('#resultsOne').append(newWell);
              }
              makeChart();  //function that makes the chartjs chart
 
@@ -211,7 +212,7 @@
          var ctx = document.getElementById('myChart').getContext('2d');
          var chart = new Chart(ctx, {
              // The type of chart we want to create
-             type: 'horizontalBar',
+             type: 'bar',
 
              data: {
                  labels: cityCategoryTitles,
@@ -229,7 +230,8 @@
                          ticks: {
                             // this will make the x axis start at 0
                              // beginAtZero: true
-                         }
+                         },
+                         barPercentage: 0.3
                      }]
                  }
 
@@ -240,9 +242,6 @@
 
      }
      //****************************************************************
-
-
-
 
 
 
