@@ -1,53 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Basic Framework</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="assets/style.css">
-	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
-	
-                                    
-</head>
-<body>
-<div class="container-fluid">
-	<div class="jumbotron text-center header"><h1>Find Me a Job</h1>
-		<div class="row">
-			<text>City</text>
-			<select>
-				<option value="phoenix">Phoenix</option>
-				<option value="chandler">Chandler</option>
-				<option value="gilbert">Gilbert</option>
-			</select>
-			<text>Job Title</text>
-			<select>
-				<option value="webDeveloper">Web Developer</option>
-				<option value="jrWebDeveloper">Jr Web Developer</option>
-				<option value="frontEndDeveloper">Front End Developer</option>
-				<option value="backEndDeveloper">Back End Developer</option>
-			</select>
-			<br><br>
-			<button type="submit" id="search" class="btn btn-regular">Search</button>
-		</div>
-	</div>
-	<div class="col-md-4 resultsOne" id="resultsOne">This will hold the results one
-		<div class="well"></div>
-		<div class="well"></div>
-		<div class="well"></div>
-		<div class="well"></div>
-	</div>
-	<div class="col-md-4 resultsTwo" id="resultsTwo">This will hold the results two
-		<div class="well">
-			<span id="indeed_at"><a title="Job Search" href="https://www.indeed.com" rel="nofollow" >jobs by <img alt=Indeed src="https://www.indeed.com/p/jobsearch.gif" style="border: 0; vertical-align: middle;"></a></span>
-		</div>
-	</div>
-	<div class="col-md-4 favorites">This will hold the sidebar for the favorites
-		<div class="well">
-			
-		</div>
-	</div>
-	</div>
-<script type="text/javascript" src="assets/boomerang.js"></script>
-</body>
-</html>
 
+<head>
+
+    <title>Project Boomerang</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/dragula.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+</head>
+
+<body>
+
+    <header class="text-center header">
+        <div class="jumbotron jumbo col-md-6 col-md-offset-3">
+            <h1>Relocation Snapshot</h1>
+            <div class="form-group">City:
+                <input type="text" id="searchInput">
+                <button id="search" class="btn btn-regular">Search</button>
+            </div>
+            <h2 id="salary"></h2>
+            <h3 id="beer"></h3>
+        </div>
+    </header>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div id="chart">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="col-md-1"></div>
+        <div class="col-md-3 resultsOne" id="resultsOne">
+            <div class="well">
+            </div>
+            <div class="well"></div>
+            <div class="well"></div>
+            <div class="well"></div>
+        </div>
+        <div class="col-md-3 resultsTwo" id="resultsTwo">
+            <div class="well"></div>
+        </div>
+        <div class="col-md-3 favorites" id="savedJobs">
+            <button id="save" class="btn btn-regular">Save</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="assets/boomerang.js"></script>
+    <script type="text/javascript" src="assets/dragula.js"></script>
+</body>
+
+</html>
