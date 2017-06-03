@@ -5,6 +5,7 @@
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
+     var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
 
      var config = {
@@ -55,6 +56,9 @@
              container.className = container.className.replace('ex-over', '');
          });
      //*****************************************************************************************
+     //
+     
+
 
      function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
@@ -86,13 +90,21 @@
                  var snippet = response.results[i].snippet;
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
-                 //put the jobtitle in the well
+                 //put the job results in the newWell var
                  newWell.html("<strong>Title: </strong>" + jobTitle);
                  newWell.append("<br>" + "<strong>Company: </strong>" + company);
                  newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
                  newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
-                 //put the well in the results container
+                 
+                 //pushes "newWell" into Firebase (commented due to needing help/not working)
+                 // );
+                 
+                 // database.ref('indeed').push({
+                 // 	newWell
+                 // });
+                 // console.log(database.ref('indeed'.newWell)
+                 //adds the results into the newWell var
                  $('.resultsTwo').append(newWell);
              }
          });
@@ -108,7 +120,15 @@
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
-     });
+         //hides the city info by default so that just jobs info is displayed, part of the function
+         //for the buttons to be able to show/hide different parts
+         if (cityInfo.style.display === 'none') {
+        	cityInfo.style.display = 'block';
+    	} else {
+        	cityInfo.style.display = 'none';
+    	}
+         
+     	});
 
      function makeTeleportAjaxRequest() {
          // this api gets the city scores from teleport - no key needed
