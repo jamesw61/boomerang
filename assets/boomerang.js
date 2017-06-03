@@ -29,9 +29,9 @@
          var jobTitleFb = $('#resultsTwo div:first-child').html();
          console.log(jobTitleFb); // this always comes back as undefined if you change the above 
          //selector to #savedJobs
-         // database.ref('jobs').push({
-         //    jobTitle:jobTitleFb
-         // });
+         database.ref('jobs').push({
+            jobTitle:jobTitleFb
+         });
      });
 
      //This works -- values come back from firebase on to our page
