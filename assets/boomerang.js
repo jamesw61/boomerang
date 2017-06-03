@@ -70,7 +70,7 @@
              // this crossDomain key eliminated the need for the cross origin chrome extension
              crossDomain: true
          }).done(function(response) {
-             // console.log(response);
+             console.log(response);
              // I only got the jobtitle for now
              // I would imagine we'll also want the company(.company),
              // the description (.snippet), and the url (.url)
@@ -81,10 +81,16 @@
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
+                 var company = response.results[i].company;
+                 var jobUrl = response.results[i].url;
+                 var snippet = response.results[i].snippet;
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
                  //put the jobtitle in the well
-                 newWell.html(jobTitle).val(jobTitle);
+                 newWell.html("<strong>Title: </strong>" + jobTitle);
+                 newWell.append("<br>" + "<strong>Company: </strong>" + company);
+                 newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
+                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
                  //put the well in the results container
                  $('.resultsTwo').append(newWell);
