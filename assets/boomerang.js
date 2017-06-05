@@ -182,7 +182,9 @@
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
              var avgHigh = response.categories[2].data[5].string_value;
-             
+
+             $('#temp').html("Avg. temerature high: " + avgHigh);
+
          });
      }
 
