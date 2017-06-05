@@ -5,6 +5,7 @@
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
+     var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
@@ -28,9 +29,9 @@
          var jobTitleFb = $('#resultsTwo div:first-child').html();
          console.log(jobTitleFb); // this always comes back as undefined if you change the above 
          //selector to #savedJobs
-         // database.ref('jobs').push({
-         //    jobTitle:jobTitleFb
-         // });
+         database.ref('jobs').push({
+            jobTitle:jobTitleFb
+         });
      });
 
      //This works -- values come back from firebase on to our page
@@ -80,10 +81,18 @@
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
+                 var company = response.results[i].company;
+                 var jobUrl = response.results[i].url;
+                 var snippet = response.results[i].snippet;
+
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
                  //put the jobtitle in the well
-                 newWell.html(jobTitle).val(jobTitle);
+                 // newWell.html(jobTitle).val(jobTitle);
+                 newWell.html("<strong>Title: </strong>" + jobTitle);
+                 newWell.append("<br>" + "<strong>Company: </strong>" + company);
+                 newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
+                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
                  //put the well in the results container
                  $('.resultsTwo').append(newWell);
@@ -102,6 +111,14 @@
          getPriceOfBeer();
          getImage();
      });
+     $("#searchInput").keyup(function(event){
+      if(event.keyCode == 13){
+          $("#search").click();
+          $('#searchInput').val("");
+      }
+  });
+
+
 
      function makeTeleportAjaxRequest() {
          // this api gets the city scores from teleport - no key needed
@@ -181,9 +198,9 @@
              console.log(response);
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
-             var avgHigh = response.categories[2].data[5].string_value;
-
-             $('#temp').html("Avg. temerature high: " + avgHigh);
+             var avgHighC = response.categories[2].data[5].string_value;
+             var avgHighF = Math.round(avgHighC*9/5 + 32);
+             $('#temp').html("Avg. temerature high: " + avgHighF);
 
          });
      }
