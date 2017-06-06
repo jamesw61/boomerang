@@ -248,6 +248,9 @@ $(document).ready(function() {
                 }]
             },
             options: {
+                legend: {
+                    display: false
+                },
                 scales: {
                     xAxes: [{
                         ticks: {
