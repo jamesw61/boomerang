@@ -1,11 +1,9 @@
 $(document).ready(function() {
     var city = "phoenix";
     var occupation = "junior+web+developer";
-    var citiesArray = []; //
-    var ListOfCities = []; //are these obsolete now?
     var email = "";
     var password = "";
-    var newListOfCities = [
+    var ListOfCities = [
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin", "Birmingham",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
         "Buffalo", "Charleston", "Charlotte", "Chattanooga",
@@ -20,7 +18,7 @@ $(document).ready(function() {
         "Phoenix", "Pittsburgh", "Portland, ME", "Portland, OR",
         "Providence", "Raleigh", "Richmond", "Rochester",
         "Salt Lake City", "San Antonio", "San Diego", "San Francisco Bay Area",
-        "San Jose", "San Juan", "San Luis Obispo", "Seattle",
+        "San Juan", "San Luis Obispo", "Seattle",
         "St. Louis", "Tampa Bay Area", "Washington, D.C.",
     ];
 
@@ -40,7 +38,8 @@ $(document).ready(function() {
 
     var database = firebase.database();
 
-    $('#chart').hide();
+   $('#cityInfo').show();
+   $('#jobInfo').hide();
 
     database.ref('jobs').on("child_added", function(snapshot) {
         var storedJobs = snapshot.val();
@@ -113,8 +112,6 @@ $(document).ready(function() {
         });
     }
 
-
-
     //*************************************************************************************************************
     $("#searches").on('click', function() {
         unformattedCity = $("#searchInput option:selected").text();
@@ -128,7 +125,7 @@ $(document).ready(function() {
         getPriceOfBeer();
         getImage();
         $("#toggle").show();
-        $("#cityInfo").hide();
+        $("#cityInfo").show();
     });
 
     //******************************************************************************************************************
@@ -196,12 +193,28 @@ $(document).ready(function() {
             method: "GET"
         }).done(function(response) {
             console.log(response);
-            var beerPrice = response.categories[3].data[6].currency_dollar_value;
-            $('#beer').html("Avg. price of beer:  $" + beerPrice);
+            var beerArray = response.categories[3].data;
+            for(var z = 0; z < beerArray.length; z++){
+                // console.log(beerArray[z].id);
+                if (beerArray[z].id === "COST-IMPORT-BEER") {
+                    var beerPrice = beerArray[z].currency_dollar_value;
+                    // console.log(beerPrice);
+                    $('#beer').html("Avg. price of beer:  $" + beerPrice);
+                }
+            }
 
-            var avgHighC = response.categories[2].data[5].string_value;
-            var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
-            $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
+            var tempArray = response.categories[2].data;
+            for (var x = 0; x < tempArray.length; x++){
+                if (tempArray[x].id === "WEATHER-AVERAGE-HIGH"){
+                    var avgHighC = response.categories[2].data[x].string_value;
+                    var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
+                     $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
+                }
+
+            }
+
+
+            
         });
     }
 
@@ -258,74 +271,74 @@ $(document).ready(function() {
 
 
 
-    //Code from Firebase to add functionality to allow users to signup w/email & password
-    function toggleSignIn() {
-        if (firebase.auth().currentUser) {
-            // [START signout]
-            firebase.auth().signOut();
-            // [END signout]
-        } else {
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
-            if (email.length < 4) {
-                alert('Please enter an email address.');
-                return;
-            }
-            if (password.length < 4) {
-                alert('Please enter a password.');
-                return;
-            }
-            // Sign in with email and pass.
-            // [START authwithemail]
-            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // [START_EXCLUDE]
-                if (errorCode === 'auth/wrong-password') {
-                    alert('Wrong password.');
-                } else {
-                    alert(errorMessage);
-                }
-                console.log(error);
-                document.getElementById('quickstart-sign-in').disabled = false;
-            });
-        }
-    }
+    // //Code from Firebase to add functionality to allow users to signup w/email & password
+    // function toggleSignIn() {
+    //     if (firebase.auth().currentUser) {
+    //         // [START signout]
+    //         firebase.auth().signOut();
+    //         // [END signout]
+    //     } else {
+    //         var email = document.getElementById('email').value;
+    //         var password = document.getElementById('password').value;
+    //         if (email.length < 4) {
+    //             alert('Please enter an email address.');
+    //             return;
+    //         }
+    //         if (password.length < 4) {
+    //             alert('Please enter a password.');
+    //             return;
+    //         }
+    //         // Sign in with email and pass.
+    //         // [START authwithemail]
+    //         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    //             // Handle Errors here.
+    //             var errorCode = error.code;
+    //             var errorMessage = error.message;
+    //             // [START_EXCLUDE]
+    //             if (errorCode === 'auth/wrong-password') {
+    //                 alert('Wrong password.');
+    //             } else {
+    //                 alert(errorMessage);
+    //             }
+    //             console.log(error);
+    //             document.getElementById('quickstart-sign-in').disabled = false;
+    //         });
+    //     }
+    // }
 
-    function handleSignUp() {
-        // var email = document.getElementById('email').value;
-        // var password = document.getElementById('password').value;
-        if (email.length < 4) {
-            alert('Please enter an email address.');
-            return;
-        }
-        if (password.length < 4) {
-            alert('Please enter a password.');
-            return;
-        }
-        // Sign in with email and pass.
-        // [START createwithemail]
-        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // [START_EXCLUDE]
-            if (errorCode == 'auth/weak-password') {
-                alert('The password is too weak.');
-            } else {
-                alert(errorMessage);
-            }
-            console.log(error);
-            // [END_EXCLUDE]
-        })
-    };
+    // function handleSignUp() {
+    //     // var email = document.getElementById('email').value;
+    //     // var password = document.getElementById('password').value;
+    //     if (email.length < 4) {
+    //         alert('Please enter an email address.');
+    //         return;
+    //     }
+    //     if (password.length < 4) {
+    //         alert('Please enter a password.');
+    //         return;
+    //     }
+    //     // Sign in with email and pass.
+    //     // [START createwithemail]
+    //     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    //         // Handle Errors here.
+    //         var errorCode = error.code;
+    //         var errorMessage = error.message;
+    //         // [START_EXCLUDE]
+    //         if (errorCode == 'auth/weak-password') {
+    //             alert('The password is too weak.');
+    //         } else {
+    //             alert(errorMessage);
+    //         }
+    //         console.log(error);
+    //         // [END_EXCLUDE]
+    //     })
+    // };
 
 
-    for (k = 0; k < newListOfCities.length; k++) {
+    for (k = 0; k < ListOfCities.length; k++) {
         var newOptions = $("<option></option>");
-        newOptions.attr("value", newListOfCities[k]);
-        newOptions.html(newListOfCities[k]);
+        newOptions.attr("value", ListOfCities[k]);
+        newOptions.html(ListOfCities[k]);
         $("#searchInput").append(newOptions);
     };
     //****************************************************************
@@ -341,17 +354,17 @@ $(document).ready(function() {
         };
     });
 
-    //Show the search options/button once user is logged in
-    $("#logIn").on("click", function() {
-        $(".search").show();
-        $(".logIn").hide();
-        email = $("#email").val().trim();
-        password = $("#password").val().trim();
-        console.log("email: " + email);
-        console.log("password: " + password);
-        handleSignUp();
+    // //Show the search options/button once user is logged in
+    // $("#logIn").on("click", function() {
+    //     $(".search").show();
+    //     $(".logIn").hide();
+    //     email = $("#email").val().trim();
+    //     password = $("#password").val().trim();
+    //     console.log("email: " + email);
+    //     console.log("password: " + password);
+    //     handleSignUp();
 
-    });
+    // });
 
 
     makeTeleportAjaxRequest();
