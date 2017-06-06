@@ -2,10 +2,13 @@
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
-     var cityCategoryTitles = []; // pushed from teleport
-     var cityData = []; // also from teleport
-     var barColorArray = []; // to hold rgb values for chartjs
-     var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
+
+     var cityCategoryTitles = [];   // pushed from teleport
+     var cityData = [];             // also from teleport
+     var barColorArray = [];        // to hold rgb values for chartjs
+     var email = "";
+     var password = "";
+     // var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
@@ -24,15 +27,17 @@
      //but we need the right column to push
      //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
      // on the load of the page are from my(james) firebase.
-     // $("#save").on("click", function() {
 
-     //     var jobTitleFb = $('#resultsTwo div:first-child').html();
-     //     console.log(jobTitleFb); // this always comes back as undefined if you change the above 
-     //     //selector to #savedJobs
-     //     database.ref('jobs').push({
-     //         jobTitle: jobTitleFb
-     //     });
-     // });
+     $("#save").on("click", function() {
+
+         var jobTitleFb = $('#resultsTwo div:first-child').html();
+         console.log(jobTitleFb); // this always comes back as undefined if you change the above 
+         //selector to #savedJobs
+         database.ref('jobs').push({
+            jobTitle:jobTitleFb
+         });
+     });
+
 
      //This works -- values come back from firebase on to our page
      database.ref('jobs').on("child_added", function(snapshot) {
@@ -68,6 +73,11 @@
              
          });
      //*****************************************************************************************
+     //
+
+
+     $("#toggle").hide();
+     $(".search").hide();
 
      function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
@@ -83,14 +93,14 @@
              // this crossDomain key eliminated the need for the cross origin chrome extension
              crossDomain: true
          }).done(function(response) {
-             // console.log(response);
+             console.log(response);
              // I only got the jobtitle for now
              // I would imagine we'll also want the company(.company),
              // the description (.snippet), and the url (.url)
              // console.log(response.results[0].jobtitle);
              //empties the container of whatever was in it before - maybe we don't do this?
              // but then we'll have to prepend below instead of appending
-             $('.resultsTwo').empty()
+             $('.resultsTwo').empty();
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
@@ -100,14 +110,13 @@
 
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
-                 //put the jobtitle in the well
-                 // newWell.html(jobTitle).val(jobTitle);
+                 //put the job results in the newWell var
                  newWell.html("<strong>Title: </strong>" + jobTitle);
                  newWell.append("<br>" + "<strong>Company: </strong>" + company);
-                 newWell.append("<br>" + "<a href=" + jobUrl + ' target="_blank">Link to job' + "</a>");
+                 newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
                  newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
-                 //put the well in the results container
+
                  $('.resultsTwo').append(newWell);
              }
          });
@@ -118,13 +127,103 @@
          city = $('#searchInput').val().trim();
 
          occupation = "junior+web+developer";
-         makeTeleportAjaxRequest();
+         makeTeleportAjaxRequest(city);
          makeIndeedAjaxRequest();
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
+         $("#toggle").show();
+         $("#cityInfo").hide();
+
          
+     	});
+     //Show/Hide the city info with the button created once the search on click runs
+     $("#toggle").on('click', function(){
+    	if ($("#cityInfo").is(":visible")) {
+    		$("#cityInfo").hide();
+    	} 
+    	else {
+    		$("#cityInfo").show();
+    	};
      });
+
+     //Show the search options/button once user is logged in
+     $("#logIn").on("click", function(){
+     	$(".search").show();
+     	$(".logIn").hide();
+     	email = $("#email").val().trim();
+     	password = $("#password").val().trim();
+     	console.log("email: " + email);
+     	console.log("password: " + password);
+     	handleSignUp();
+
+     });
+     
+
+     //Code from Firebase to add functionality to allow users to signup w/email & password
+     function toggleSignIn() {
+      if (firebase.auth().currentUser) {
+        // [START signout]
+        firebase.auth().signOut();
+        // [END signout]
+      } else {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        if (email.length < 4) {
+          alert('Please enter an email address.');
+          return;
+        }
+        if (password.length < 4) {
+          alert('Please enter a password.');
+          return;
+        }
+        // Sign in with email and pass.
+        // [START authwithemail]
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // [START_EXCLUDE]
+          if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+          document.getElementById('quickstart-sign-in').disabled = false;
+      });
+    }
+}
+function handleSignUp() {
+      // var email = document.getElementById('email').value;
+      // var password = document.getElementById('password').value;
+      if (email.length < 4) {
+        alert('Please enter an email address.');
+        return;
+      }
+      if (password.length < 4) {
+        alert('Please enter a password.');
+        return;
+      }
+      // Sign in with email and pass.
+      // [START createwithemail]
+     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+        // [END_EXCLUDE]
+    })
+      };
+
+         
+     
      $("#searchInput").keyup(function(event) {
          if (event.keyCode == 13) {
              $("#search").click();
@@ -133,8 +232,7 @@
      });
 
 
-
-     function makeTeleportAjaxRequest() {
+     function makeTeleportAjaxRequest(city) {
          // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
          $('#myChart').empty();
@@ -285,10 +383,10 @@
 
 
 
+});
 
 
 
 
 
-
- });
+ 

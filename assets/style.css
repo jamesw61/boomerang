@@ -67,6 +67,9 @@ input {
 	margin-bottom: 10px;
 }
 
+#cityInfo{
+	margin: 2% 3% 2% 3%;
+}
 .navbar {
     margin-top: 0;
     height: 40px;
