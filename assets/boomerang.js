@@ -22,7 +22,7 @@ $(document).ready(function() {
 
      
       
-         console.log(citiesArray[k]);
+         //console.log(citiesArray[k]);
 
       });
                     
@@ -119,10 +119,15 @@ $(document).ready(function() {
      }
 
      
+        //city = $("#searchInput option:selected").text();
+      // console.log(city);
+     
 
-     $("#search").on('click', function() {
+     $("#searches").on('click', function() {
          //commented out the line below for now so I don't have to type in a search term every time
-         city = $('#searchInput').val().trim();
+         getCity = $("#searchInput option:selected").text();
+         city = getCity.toLowerCase();
+         console.log(city);
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
          makeIndeedAjaxRequest();
