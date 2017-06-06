@@ -2,6 +2,7 @@
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
+
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
@@ -26,6 +27,7 @@
      //but we need the right column to push
      //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
      // on the load of the page are from my(james) firebase.
+
      $("#save").on("click", function() {
 
          var jobTitleFb = $('#resultsTwo div:first-child').html();
@@ -36,14 +38,16 @@
          });
      });
 
+
      //This works -- values come back from firebase on to our page
      database.ref('jobs').on("child_added", function(snapshot) {
          var storedJobs = snapshot.val();
          var storedJobTitle = storedJobs.jobTitle;
          var newJobWell = $('<div class="well"></div>');
          newJobWell.html(storedJobTitle);
+
          $('#savedJobs').append(newJobWell);
-         
+
      });
      //******************************copied Dragula code*****************************************
      dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -51,10 +55,22 @@
              el.className = el.className.replace('ex-moved', '');
          }).on('drop', function(el) {
              el.className += ' ex-moved';
+               console.log(el);
+             var draggedWell = $(el).html();
+             console.log(draggedWell);
+             database.ref('jobs').push({
+                 jobTitle: draggedWell
+             });
+             $(el).remove();
+             
          }).on('over', function(el, container) {
              container.className += ' ex-over';
+
+             
          }).on('out', function(el, container) {
              container.className = container.className.replace('ex-over', '');
+
+             
          });
      //*****************************************************************************************
      //
@@ -84,13 +100,14 @@
              // console.log(response.results[0].jobtitle);
              //empties the container of whatever was in it before - maybe we don't do this?
              // but then we'll have to prepend below instead of appending
-             $('.resultsTwo').empty()
+             $('.resultsTwo').empty();
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
                  var company = response.results[i].company;
                  var jobUrl = response.results[i].url;
                  var snippet = response.results[i].snippet;
+
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
                  //put the job results in the newWell var
@@ -99,15 +116,7 @@
                  newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
                  newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
-                 
-                 //pushes "newWell" into Firebase (commented due to needing help/not working)
-                 // );
-                 
-                 // database.ref('indeed').push({
-                 // 	newWell
-                 // });
-                 // console.log(database.ref('indeed'.newWell)
-                 //adds the results into the newWell var
+
                  $('.resultsTwo').append(newWell);
              }
          });
@@ -118,7 +127,7 @@
          city = $('#searchInput').val().trim();
 
          occupation = "junior+web+developer";
-         makeTeleportAjaxRequest();
+         makeTeleportAjaxRequest(city);
          makeIndeedAjaxRequest();
          makeSalaryAjaxRequest();
          getPriceOfBeer();
@@ -148,10 +157,43 @@
      	console.log("password: " + password);
      	handleSignUp();
 
-     })
+     });
      
 
      //Code from Firebase to add functionality to allow users to signup w/email & password
+     function toggleSignIn() {
+      if (firebase.auth().currentUser) {
+        // [START signout]
+        firebase.auth().signOut();
+        // [END signout]
+      } else {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        if (email.length < 4) {
+          alert('Please enter an email address.');
+          return;
+        }
+        if (password.length < 4) {
+          alert('Please enter a password.');
+          return;
+        }
+        // Sign in with email and pass.
+        // [START authwithemail]
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // [START_EXCLUDE]
+          if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+          document.getElementById('quickstart-sign-in').disabled = false;
+      });
+    }
+}
 function handleSignUp() {
       // var email = document.getElementById('email').value;
       // var password = document.getElementById('password').value;
@@ -180,8 +222,17 @@ function handleSignUp() {
     })
       };
 
+         
+     
+     $("#searchInput").keyup(function(event) {
+         if (event.keyCode == 13) {
+             $("#search").click();
+             $('#searchInput').val("");
+         }
+     });
 
-     function makeTeleportAjaxRequest() {
+
+     function makeTeleportAjaxRequest(city) {
          // this api gets the city scores from teleport - no key needed
          var cityscoresURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/scores/";
          $('#myChart').empty();
@@ -223,7 +274,7 @@ function handleSignUp() {
                  newWell.addClass('text-center').append(newH);
                  // $('#resultsOne').append(newWell);
              }
-             makeChart();  //function that makes the chartjs chart
+             makeChart(); //function that makes the chartjs chart
 
 
          });
@@ -256,11 +307,13 @@ function handleSignUp() {
              method: "GET"
 
          }).done(function(response) {
-             // console.log(response);
+             console.log(response);
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
-             var avgHigh = response.categories[2].data[5].string_value;
-             $('#temp').html("Avg. temerature high: " + avgHigh);
+             var avgHighC = response.categories[2].data[5].string_value;
+             var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
+             $('#temp').html("Avg. temerature high: " + avgHighF);
+
          });
      }
 
@@ -308,15 +361,15 @@ function handleSignUp() {
                  scales: {
                      xAxes: [{
                          ticks: {
-                            // this will make the x axis start at 0
+                             // this will make the x axis start at 0
                              // beginAtZero: true
                          },
                          barPercentage: 0.3
                      }],
                      yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
+                         ticks: {
+                             beginAtZero: true
+                         }
                      }]
                  }
 
@@ -330,10 +383,10 @@ function handleSignUp() {
 
 
 
+});
 
 
 
 
 
-
- });
+ 
