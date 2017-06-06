@@ -3,7 +3,7 @@ $(document).ready(function() {
     var occupation = "junior+web+developer";
     var email = "";
     var password = "";
-    var ListOfCities = [
+    var ListOfCities = ["Phoenix",
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin", "Birmingham",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
         "Buffalo", "Charleston", "Charlotte", "Chattanooga",
@@ -15,7 +15,7 @@ $(document).ready(function() {
         "Miami", "Milwaukee", "Minneapolis-Saint Paul", "Nashville",
         "New Orleans", "New York", "Oklahoma City", "Omaha",
         "Orlando", "Ottawa", "Palo Alto", "Philadelphia",
-        "Phoenix", "Pittsburgh", "Portland, ME", "Portland, OR",
+        "Pittsburgh", "Portland, ME", "Portland, OR",
         "Providence", "Raleigh", "Richmond", "Rochester",
         "Salt Lake City", "San Antonio", "San Diego", "San Francisco Bay Area",
         "San Juan", "San Luis Obispo", "Seattle",
@@ -25,6 +25,8 @@ $(document).ready(function() {
     var cityCategoryTitles = []; // pushed from teleport
     var cityData = []; // also from teleport
     var barColorArray = []; // to hold rgb values for chartjs
+    var borderColorArray = [];
+    var unformattedCity = "Phoenix";
 
     var config = {
         apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
@@ -128,6 +130,7 @@ $(document).ready(function() {
         cityCategoryTitles.length = 0;
         cityData.length = 0;
         barColorArray.length = 0;
+        borderColorArray.length = 0;
         $.ajax({
             url: cityscoresURL,
             method: "GET"
@@ -147,11 +150,14 @@ $(document).ready(function() {
                 //************************************************************************************************  
                 //pushes rgb codes to an array for each score              
                 if (newCatScore > 6.9) {
-                    barColorArray.push('rgb(69, 244, 66)');
+                    barColorArray.push('rgb(183, 249, 154)');
+                    borderColorArray.push('rgb(34, 137, 98)');
                 } else if (newCatScore < 4.0) {
-                    barColorArray.push('rgb(255, 0, 0)');
+                    barColorArray.push('rgb(255,177,193)');
+                    borderColorArray.push('rgb(109, 1, 17)');
                 } else {
-                    barColorArray.push('rgb(12, 76, 178)');
+                    barColorArray.push('rgb(154,208,245)');
+                    borderColorArray.push('rgb(9, 75, 122)');
                 }
                 //******************************************************************************************************************
             }
@@ -234,9 +240,10 @@ $(document).ready(function() {
             data: {
                 labels: cityCategoryTitles,
                 datasets: [{
-                    label: city,
+                    label: unformattedCity,
                     backgroundColor: barColorArray,
-                    borderColor: 'rgb(0, 0, 0)',
+                    borderColor: borderColorArray,
+                    borderWidth:1,
                     data: cityData,
                 }]
             },
@@ -247,7 +254,7 @@ $(document).ready(function() {
                             // this will make the x axis start at 0
                             // beginAtZero: true
                         },
-                        barPercentage: 0.3
+                        barPercentage: 0.7
                     }],
                     yAxes: [{
                         ticks: {
