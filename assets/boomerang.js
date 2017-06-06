@@ -2,9 +2,9 @@
 
      var city = "phoenix";
      var occupation = "junior+web+developer";
-     var cityCategoryTitles = [];   // pushed from teleport
-     var cityData = [];             // also from teleport
-     var barColorArray = [];        // to hold rgb values for chartjs
+     var cityCategoryTitles = []; // pushed from teleport
+     var cityData = []; // also from teleport
+     var barColorArray = []; // to hold rgb values for chartjs
      var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
      var config = {
@@ -30,7 +30,7 @@
          console.log(jobTitleFb); // this always comes back as undefined if you change the above 
          //selector to #savedJobs
          database.ref('jobs').push({
-            jobTitle:jobTitleFb
+             jobTitle: jobTitleFb
          });
      });
 
@@ -41,7 +41,7 @@
          var newJobWell = $('<div class="well"></div>');
          newJobWell.html(storedJobTitle);
          $('#savedJobs').append(newJobWell);
-         
+
      });
      //******************************copied Dragula code*****************************************
      dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -51,8 +51,15 @@
              el.className += ' ex-moved';
          }).on('over', function(el, container) {
              container.className += ' ex-over';
+             console.log(el);
+             var test = $(el).html();
+             console.log(test);
+             database.ref('jobs').push({
+                 jobTitle: test
+             });
          }).on('out', function(el, container) {
              container.className = container.className.replace('ex-over', '');
+             
          });
      //*****************************************************************************************
 
@@ -91,7 +98,7 @@
                  // newWell.html(jobTitle).val(jobTitle);
                  newWell.html("<strong>Title: </strong>" + jobTitle);
                  newWell.append("<br>" + "<strong>Company: </strong>" + company);
-                 newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
+                 newWell.append("<br>" + "<a href=" + jobUrl + ' target="_blank">Link to job' + "</a>");
                  newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
 
                  //put the well in the results container
@@ -111,12 +118,12 @@
          getPriceOfBeer();
          getImage();
      });
-     $("#searchInput").keyup(function(event){
-      if(event.keyCode == 13){
-          $("#search").click();
-          $('#searchInput').val("");
-      }
-  });
+     $("#searchInput").keyup(function(event) {
+         if (event.keyCode == 13) {
+             $("#search").click();
+             $('#searchInput').val("");
+         }
+     });
 
 
 
@@ -162,7 +169,7 @@
                  newWell.addClass('text-center').append(newH);
                  // $('#resultsOne').append(newWell);
              }
-             makeChart();  //function that makes the chartjs chart
+             makeChart(); //function that makes the chartjs chart
 
 
          });
@@ -199,7 +206,7 @@
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
              var avgHighC = response.categories[2].data[5].string_value;
-             var avgHighF = Math.round(avgHighC*9/5 + 32);
+             var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
              $('#temp').html("Avg. temerature high: " + avgHighF);
 
          });
@@ -249,15 +256,15 @@
                  scales: {
                      xAxes: [{
                          ticks: {
-                            // this will make the x axis start at 0
+                             // this will make the x axis start at 0
                              // beginAtZero: true
                          },
                          barPercentage: 0.3
                      }],
                      yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
+                         ticks: {
+                             beginAtZero: true
+                         }
                      }]
                  }
 

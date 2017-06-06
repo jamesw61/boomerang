@@ -50,6 +50,7 @@ header {
     background-size: cover;
     min-height: 400px;
     background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
+    margin-bottom: 0;
 }
 
 button,
@@ -66,4 +67,12 @@ input {
 	margin-bottom: 10px;
 }
 
+.navbar {
+    margin-top: 0;
+    height: 40px;
+    background-color: black;
+}
 
+.label {
+    height: 20px;
+}

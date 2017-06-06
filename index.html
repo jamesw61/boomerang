@@ -10,7 +10,6 @@
     <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-
 </head>
 
 <body>
@@ -25,17 +24,29 @@
             <h3 id="beer"></h3>
             <h3 id="temp"></h3>
         </div>
-    </header>
-<div class="container-fluid">
+    </header>   
     <div class="row">
-        <!-- <div class="col-md-1"></div> -->
-        <div class="col-md-10 col-md-offset-1">
-            <div id="chart">
-                <canvas id="myChart"></canvas>
+        <div class="col-md-4 text-center">
+            <p>Chart</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <p>Info</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <p>Jobs</p>
+        </div>
+
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- <div class="col-md-1"></div> -->
+            <div class="col-md-10 col-md-offset-1">
+                <div id="chart">
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <div class="container-fluid">
         <div class="col-md-1"></div>
         <!-- <div class="col-md-3 resultsOne" id="resultsOne">
@@ -54,7 +65,6 @@
     </div>
     <script type="text/javascript" src="assets/boomerang.js"></script>
     <script type="text/javascript" src="assets/dragula.js"></script>
-
 </body>
 
 </html>
