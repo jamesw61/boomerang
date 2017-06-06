@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
     var city = "phoenix";
     var occupation = "junior+web+developer";
@@ -69,6 +70,10 @@ $(document).ready(function() {
         // I set the # of results to 5 but we can change it
         // if you get ERR_BLOCKED_BY_CLIENT it is probably because of adblockers
         newQueryURL = "https://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
+<<<<<<< HEAD
+=======
+        console.log(newQueryURL);
+>>>>>>> 4bf7cf45f97f37ead9e07189a78765921b444228
         $.ajax({
             url: newQueryURL,
             method: "GET",
