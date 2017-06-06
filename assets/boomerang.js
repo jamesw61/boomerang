@@ -65,7 +65,7 @@
          // you need format=json, and the version v=2 in the URL
          // I set the # of results to 5 but we can change it
          // if you get ERR_BLOCKED_BY_CLIENT it is probably because of adblockers
-         newQueryURL = "http://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
+         newQueryURL = "https://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
          $.ajax({
              url: newQueryURL,
              method: "GET",
