@@ -119,14 +119,13 @@ $(document).ready(function() {
      }
 
      
-        //city = $("#searchInput option:selected").text();
-      // console.log(city);
-     
+   
 
      $("#searches").on('click', function() {
          //commented out the line below for now so I don't have to type in a search term every time
          getCity = $("#searchInput option:selected").text();
-         city = getCity.toLowerCase();
+         city2 = getCity.toLowerCase();
+         city = city2.replace(/ /g, "-");
          console.log(city);
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
@@ -134,11 +133,7 @@ $(document).ready(function() {
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
-         //create new button for city info
-         var cityInfo;
-         
-         var jobInfo; 
-         //create new button for job info
+       
      });
 
      function makeTeleportAjaxRequest() {
