@@ -5,8 +5,7 @@
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
-     var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
-
+     // var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
@@ -57,9 +56,9 @@
          });
      //*****************************************************************************************
      //
-     
 
 
+     $("#toggle").hide();
      function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
          // you need format=json, and the version v=2 in the URL
@@ -120,15 +119,19 @@
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
-         //hides the city info by default so that just jobs info is displayed, part of the function
-         //for the buttons to be able to show/hide different parts
-         if (cityInfo.style.display === 'none') {
-        	cityInfo.style.display = 'block';
-    	} else {
-        	cityInfo.style.display = 'none';
-    	}
+         $("#toggle").show();
+         $("#cityInfo").hide();
          
      	});
+
+     $("#toggle").on('click', function(){
+    	if ($("#cityInfo").is(":visible")) {
+    		$("#cityInfo").hide();
+    	} 
+    	else {
+    		$("#cityInfo").show();
+    	};
+     })
 
      function makeTeleportAjaxRequest() {
          // this api gets the city scores from teleport - no key needed
