@@ -1,25 +1,35 @@
- $(document).ready(function() {
-
+$(document).ready(function() {
      var city = "phoenix";
      var occupation = "junior+web+developer";
+     
+     var citiesArray = [];
+
+     var citiesURL = "https://api.teleport.org/api/urban_areas/";
+      $.ajax({
+             url: citiesURL,
+             method: "GET",
+         }).done(function(response) {
+             console.log(response);
+             citiesArray = response._links["ua:item"];
+             console.log(citiesArray);
+
+             for (k = 0; k < citiesArray.length; k++) {
+             var newOptions = $("<option></option>");
+             newOptions.attr("value", citiesArray[k].name);
+             newOptions.html(citiesArray[k].name);
+             $("#searchInput").append(newOptions);
+            };
+
+     
+      
+         console.log(citiesArray[k]);
+
+      });
+                    
+
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
-
-
-//from Tarmin
-var queryURL = "http://api.indeed.com/ads/apisearch?publisher=8049341879024120&q=java&l=austin%2C+tx&sort=&radius=&st=&jt=&start=&limit=&fromage=&filter=&latlong=1&co=us&chnl=&userip=1.2.3.4&useragent=Mozilla/%2F4.0%28Firefox%29&v=2">
-
-$.ajax({
-          url: queryURL,
-          method: "GET",
-          dataType: 'jsonp'
-
-        }).done(function(response) {
-
-            console.log(response)
-            
-
      var config = {
          apiKey: "AIzaSyCRKdQPHdR5FR3XJUXwXhlNw7p6ylOsbz8",
          authDomain: "bacon-525e9.firebaseapp.com",
@@ -31,6 +41,7 @@ $.ajax({
      firebase.initializeApp(config);
 
      var database = firebase.database();
+
      $('#chart').hide();
      //I'm having trouble with the Dragula library...
      //I can get the middle column(resultsTwo) to push to firebase even after moving it to the right and back
@@ -38,16 +49,13 @@ $.ajax({
      //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
      // on the load of the page are from my(james) firebase.
      $("#save").on("click", function() {
-
          var jobTitleFb = $('#resultsTwo div:first-child').html();
          console.log(jobTitleFb); // this always comes back as undefined if you change the above 
          //selector to #savedJobs
-         // database.ref('jobs').push({
-         //    jobTitle:jobTitleFb
-         // });
+         database.ref('jobs').push({
+            jobTitle:jobTitleFb
+         });
      });
-
-
      //This works -- values come back from firebase on to our page
      database.ref('jobs').on("child_added", function(snapshot) {
          var storedJobs = snapshot.val();
@@ -69,8 +77,6 @@ $.ajax({
              container.className = container.className.replace('ex-over', '');
          });
      //*****************************************************************************************
-
-
      function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
          // you need format=json, and the version v=2 in the URL
@@ -85,7 +91,7 @@ $.ajax({
              // this crossDomain key eliminated the need for the cross origin chrome extension
              crossDomain: true
          }).done(function(response) {
-             // console.log(response);
+             console.log(response);
              // I only got the jobtitle for now
              // I would imagine we'll also want the company(.company),
              // the description (.snippet), and the url (.url)
@@ -96,27 +102,38 @@ $.ajax({
                  // I made the loop iteratation equal to the # of results specified above
              for (var i = 0; i < 5; i++) {
                  var jobTitle = response.results[i].jobtitle;
+                 var company = response.results[i].company;
+                 var jobUrl = response.results[i].url;
+                 var snippet = response.results[i].snippet;
                  //create a bootstrap well
                  var newWell = $('<div class="well"></div>');
                  //put the jobtitle in the well
-                 newWell.html(jobTitle).val(jobTitle);
-
+                 newWell.html("<strong>Title: </strong>" + jobTitle);
+                 newWell.append("<br>" + "<strong>Company: </strong>" + company);
+                 newWell.append("<br>" + "<a href=" + jobUrl + ">Link to job" + "</a>");
+                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
                  //put the well in the results container
                  $('.resultsTwo').append(newWell);
              }
          });
      }
 
+     
+
      $("#search").on('click', function() {
          //commented out the line below for now so I don't have to type in a search term every time
          city = $('#searchInput').val().trim();
-
          occupation = "junior+web+developer";
          makeTeleportAjaxRequest();
          makeIndeedAjaxRequest();
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
+         //create new button for city info
+         var cityInfo;
+         
+         var jobInfo; 
+         //create new button for job info
      });
 
      function makeTeleportAjaxRequest() {
@@ -127,13 +144,11 @@ $.ajax({
          cityCategoryTitles.length = 0;
          cityData.length = 0;
          barColorArray.length = 0;
-
          $.ajax({
              url: cityscoresURL,
              method: "GET"
-
          }).done(function(response) {
-             // console.log(response);
+             console.log(response);
              //empties the containing div
              $('#resultsOne').empty();
              //loops through the categories and makes a well for each - maybe we should get rid of some of these
@@ -162,20 +177,14 @@ $.ajax({
                  // $('#resultsOne').append(newWell);
              }
              makeChart();  //function that makes the chartjs chart
-
-
          });
      }
-
-
      function makeSalaryAjaxRequest() {
          //teleport has a separate api for salaries
          var salaryURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/salaries/";
-
          $.ajax({
              url: salaryURL,
              method: "GET"
-
          }).done(function(response) {
              // console.log(response);
              //I used the position in the array for web developer             
@@ -186,44 +195,35 @@ $.ajax({
              $('#salary').html("Median " + newJobTitle + " Salary:   $" + roundedSalary);
          });
      }
-
      function getPriceOfBeer() {
          var beerURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/details/";
          $.ajax({
              url: beerURL,
              method: "GET"
-
          }).done(function(response) {
              // console.log(response);
              var beerPrice = response.categories[3].data[6].currency_dollar_value;
              $('#beer').html("Avg. price of beer:  $" + beerPrice);
              var avgHigh = response.categories[2].data[5].string_value;
-             $('#temp').html("Avg. temerature high: " + avgHigh);
+             $('#temp').html("Avg. temperature high: " + avgHigh);
          });
      }
-
      function getImage() {
          //gets a city image from teleport and puts it in the header
          var imageURL = "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/"
          $.ajax({
              url: imageURL,
              method: "GET"
-
          }).done(function(response) {
              console.log(response);
              var picURL = response.photos[0].image.web;
              $('.header').css('background-image', 'url(' + picURL + ')');
          });
-
      }
-
-
      //**************Chartjs******************************
      //had to reset the canvas to get rid of flicker
-
      function makeChart() {
          $('#chart').empty().show();
-
          var newCanvas = $('<canvas id="myChart" height="100px"></canvas>');
          //I inserted html - is appending better?
          $('#chart').html(newCanvas);
@@ -231,7 +231,6 @@ $.ajax({
          var chart = new Chart(ctx, {
              // The type of chart we want to create
              type: 'bar',
-
              data: {
                  labels: cityCategoryTitles,
                  datasets: [{
@@ -241,7 +240,6 @@ $.ajax({
                      data: cityData,
                  }]
              },
-
              options: {
                  scales: {
                      xAxes: [{
@@ -257,22 +255,8 @@ $.ajax({
                         }
                      }]
                  }
-
-
              }
          });
-
-
      }
      //****************************************************************
-
-
-
-
-
-
-
-
-
  });
-
