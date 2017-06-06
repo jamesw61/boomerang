@@ -5,6 +5,8 @@
      var cityCategoryTitles = [];   // pushed from teleport
      var cityData = [];             // also from teleport
      var barColorArray = [];        // to hold rgb values for chartjs
+     var email = "";
+     var password = "";
      // var cityInfo = document.getElementById('cityInfo'); //pulls in the div for cityInfo for hide/show
 
      var config = {
@@ -59,6 +61,8 @@
 
 
      $("#toggle").hide();
+     $(".search").hide();
+
      function makeIndeedAjaxRequest() {
          // this URL has james's Indeed.com publisher key
          // you need format=json, and the version v=2 in the URL
@@ -121,9 +125,10 @@
          getImage();
          $("#toggle").show();
          $("#cityInfo").hide();
+
          
      	});
-
+     //Show/Hide the city info with the button created once the search on click runs
      $("#toggle").on('click', function(){
     	if ($("#cityInfo").is(":visible")) {
     		$("#cityInfo").hide();
@@ -131,7 +136,50 @@
     	else {
     		$("#cityInfo").show();
     	};
+     });
+
+     //Show the search options/button once user is logged in
+     $("#logIn").on("click", function(){
+     	$(".search").show();
+     	$(".logIn").hide();
+     	email = $("#email").val().trim();
+     	password = $("#password").val().trim();
+     	console.log("email: " + email);
+     	console.log("password: " + password);
+     	handleSignUp();
+
      })
+     
+
+     //Code from Firebase to add functionality to allow users to signup w/email & password
+function handleSignUp() {
+      // var email = document.getElementById('email').value;
+      // var password = document.getElementById('password').value;
+      if (email.length < 4) {
+        alert('Please enter an email address.');
+        return;
+      }
+      if (password.length < 4) {
+        alert('Please enter a password.');
+        return;
+      }
+      // Sign in with email and pass.
+      // [START createwithemail]
+     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode == 'auth/weak-password') {
+          alert('The password is too weak.');
+        } else {
+          alert(errorMessage);
+        }
+        console.log(error);
+        // [END_EXCLUDE]
+    })
+      };
+
 
      function makeTeleportAjaxRequest() {
          // this api gets the city scores from teleport - no key needed
