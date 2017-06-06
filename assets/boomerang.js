@@ -38,8 +38,8 @@ $(document).ready(function() {
 
     var database = firebase.database();
 
-   $('#cityInfo').show();
-   $('#jobInfo').hide();
+    $('#cityInfo').show();
+    $('#jobInfo').hide();
 
     database.ref('jobs').on("child_added", function(snapshot) {
         var storedJobs = snapshot.val();
@@ -52,7 +52,8 @@ $(document).ready(function() {
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
         .on('drag', function(el) {
             el.className = el.className.replace('ex-moved', '');
-        }).on('drop', function(el) {
+        })
+        .on('drop', function(el) {
             el.className += ' ex-moved';
             //this pushes the job well to firebase when the well is dropped but
             //it will push even if it is dropped in the left container
@@ -62,13 +63,48 @@ $(document).ready(function() {
             });
             $(el).remove();
 
-        }).on('over', function(el, container) {
+        })
+        .on('over', function(el, container) {
             container.className += ' ex-over';
 
         }).on('out', function(el, container) {
             container.className = container.className.replace('ex-over', '');
+            
 
         });
+
+
+
+
+
+
+
+        
+
+    dragula([$('resultsTwo'), $('savedJobs')], {
+        copy: function(el, source) {
+            return source === $('left-copy-1tomany');
+        },
+        accepts: function(el, target) {
+            return target !== $('resultsTwo');
+        }
+    });
+
+
+    // dragula(document.getElementById('savedJobs'))
+    //     .on('drop', function(el) {
+    //     el.className += ' ex-moved';
+    //     //this pushes the job well to firebase when the well is dropped but
+    //     //it will push even if it is dropped in the left container
+    //     var draggedWell = $(el).html();
+    //     database.ref('jobs').push({
+    //         jobTitle: draggedWell
+    //     });
+    //     $(el).remove();
+
+    // })
+
+
     //*****************************************************************************************
 
     function makeIndeedAjaxRequest() {
@@ -76,7 +112,7 @@ $(document).ready(function() {
         // you need format=json, and the version v=2 in the URL
         // I set the # of results to 5 but we can change it
         // if you get ERR_BLOCKED_BY_CLIENT it is probably because of adblockers
-        newQueryURL = "http://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
+        newQueryURL = "https://api.indeed.com/ads/apisearch?publisher=1107022713091933&format=json&q=" + occupation + "&l=" + city + "&limit=5&v=2";
         $.ajax({
             url: newQueryURL,
             method: "GET",
@@ -194,7 +230,7 @@ $(document).ready(function() {
         }).done(function(response) {
             console.log(response);
             var beerArray = response.categories[3].data;
-            for(var z = 0; z < beerArray.length; z++){
+            for (var z = 0; z < beerArray.length; z++) {
                 // console.log(beerArray[z].id);
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
                     var beerPrice = beerArray[z].currency_dollar_value;
@@ -204,17 +240,17 @@ $(document).ready(function() {
             }
 
             var tempArray = response.categories[2].data;
-            for (var x = 0; x < tempArray.length; x++){
-                if (tempArray[x].id === "WEATHER-AVERAGE-HIGH"){
+            for (var x = 0; x < tempArray.length; x++) {
+                if (tempArray[x].id === "WEATHER-AVERAGE-HIGH") {
                     var avgHighC = response.categories[2].data[x].string_value;
                     var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
-                     $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
+                    $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
                 }
 
             }
 
 
-            
+
         });
     }
 
