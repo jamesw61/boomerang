@@ -48,63 +48,17 @@ $(document).ready(function() {
         newJobWell.html(storedJobTitle);
         $('#savedJobs').append(newJobWell); //need to add a remove button
     });
-    //******************************copied Dragula code*****************************************
+    //******************************Dragula code*****************************************
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
-        .on('drag', function(el) {
-            el.className = el.className.replace('ex-moved', '');
-        })
-        .on('drop', function(el) {
-            el.className += ' ex-moved';
-            //this pushes the job well to firebase when the well is dropped but
-            //it will push even if it is dropped in the left container
-            var draggedWell = $(el).html();
-            database.ref('jobs').push({
-                jobTitle: draggedWell
-            });
-            $(el).remove();
-
-        })
-        .on('over', function(el, container) {
-            container.className += ' ex-over';
-
-        }).on('out', function(el, container) {
-            container.className = container.className.replace('ex-over', '');
-            
-
+        .on('drop', function(el, target, source) {
+            if (target != source && source === document.getElementById('resultsTwo')) {
+                var draggedWell = $(el).html();
+                database.ref('jobs').push({
+                    jobTitle: draggedWell
+                });
+                $(el).remove();
+            }
         });
-
-
-
-
-
-
-
-        
-
-    dragula([$('resultsTwo'), $('savedJobs')], {
-        copy: function(el, source) {
-            return source === $('left-copy-1tomany');
-        },
-        accepts: function(el, target) {
-            return target !== $('resultsTwo');
-        }
-    });
-
-
-    // dragula(document.getElementById('savedJobs'))
-    //     .on('drop', function(el) {
-    //     el.className += ' ex-moved';
-    //     //this pushes the job well to firebase when the well is dropped but
-    //     //it will push even if it is dropped in the left container
-    //     var draggedWell = $(el).html();
-    //     database.ref('jobs').push({
-    //         jobTitle: draggedWell
-    //     });
-    //     $(el).remove();
-
-    // })
-
-
     //*****************************************************************************************
 
     function makeIndeedAjaxRequest() {
