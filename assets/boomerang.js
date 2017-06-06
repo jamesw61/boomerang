@@ -24,15 +24,15 @@
      //but we need the right column to push
      //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
      // on the load of the page are from my(james) firebase.
-     $("#save").on("click", function() {
+     // $("#save").on("click", function() {
 
-         var jobTitleFb = $('#resultsTwo div:first-child').html();
-         console.log(jobTitleFb); // this always comes back as undefined if you change the above 
-         //selector to #savedJobs
-         database.ref('jobs').push({
-             jobTitle: jobTitleFb
-         });
-     });
+     //     var jobTitleFb = $('#resultsTwo div:first-child').html();
+     //     console.log(jobTitleFb); // this always comes back as undefined if you change the above 
+     //     //selector to #savedJobs
+     //     database.ref('jobs').push({
+     //         jobTitle: jobTitleFb
+     //     });
+     // });
 
      //This works -- values come back from firebase on to our page
      database.ref('jobs').on("child_added", function(snapshot) {
@@ -40,6 +40,7 @@
          var storedJobTitle = storedJobs.jobTitle;
          var newJobWell = $('<div class="well"></div>');
          newJobWell.html(storedJobTitle);
+
          $('#savedJobs').append(newJobWell);
 
      });
@@ -49,16 +50,21 @@
              el.className = el.className.replace('ex-moved', '');
          }).on('drop', function(el) {
              el.className += ' ex-moved';
+               console.log(el);
+             var draggedWell = $(el).html();
+             console.log(draggedWell);
+             database.ref('jobs').push({
+                 jobTitle: draggedWell
+             });
+             $(el).remove();
+             
          }).on('over', function(el, container) {
              container.className += ' ex-over';
-             console.log(el);
-             var test = $(el).html();
-             console.log(test);
-             database.ref('jobs').push({
-                 jobTitle: test
-             });
+
+             
          }).on('out', function(el, container) {
              container.className = container.className.replace('ex-over', '');
+
              
          });
      //*****************************************************************************************
@@ -117,6 +123,7 @@
          makeSalaryAjaxRequest();
          getPriceOfBeer();
          getImage();
+         
      });
      $("#searchInput").keyup(function(event) {
          if (event.keyCode == 13) {
