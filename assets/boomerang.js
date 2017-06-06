@@ -1,12 +1,14 @@
 $(document).ready(function() {
     var city = "phoenix";
     var occupation = "junior+web+developer";
-    var citiesArray = [];
-    var ListOfCities = [];
+    var citiesArray = []; //
+    var ListOfCities = []; //are these obsolete now?
+    var email = "";
+    var password = "";
     var newListOfCities = [
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin", "Birmingham",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
-        "Bristol", "Buffalo", "Charleston", "Charlotte", "Chattanooga",
+        "Buffalo", "Charleston", "Charlotte", "Chattanooga",
         "Chicago", "Cincinnati", "Cleveland", "Colorado Springs", "Columbus",
         "Dallas", "Denver", "Des Moines", "Detroit", "Eugene", "Fort Collins",
         "Frankfurt", "Honolulu", "Houston", "Indianapolis",
@@ -21,12 +23,6 @@ $(document).ready(function() {
         "San Jose", "San Juan", "San Luis Obispo", "Seattle",
         "St. Louis", "Tampa Bay Area", "Washington, D.C.",
     ];
-
-
-    
-
-
-
 
     var cityCategoryTitles = []; // pushed from teleport
     var cityData = []; // also from teleport
@@ -45,33 +41,13 @@ $(document).ready(function() {
     var database = firebase.database();
 
     $('#chart').hide();
-    //I'm having trouble with the Dragula library...
-    //I can get the middle column(resultsTwo) to push to firebase even after moving it to the right and back
-    //but we need the right column to push
-    //and I can't get it to work after you drag a well into it.  The wells that appear in the right column
-    // on the load of the page are from my(james) firebase.
 
-
-
-
-    $("#save").on("click", function() {
-        var jobTitleFb = $('#resultsTwo div:first-child').html();
-        console.log(jobTitleFb); // this always comes back as undefined if you change the above 
-        //selector to #savedJobs
-        database.ref('jobs').push({
-            jobTitle: jobTitleFb
-        });
-    });
-
-    //This works -- values come back from firebase on to our page
     database.ref('jobs').on("child_added", function(snapshot) {
         var storedJobs = snapshot.val();
         var storedJobTitle = storedJobs.jobTitle;
         var newJobWell = $('<div class="well"></div>');
         newJobWell.html(storedJobTitle);
-
-        $('#savedJobs').append(newJobWell);
-
+        $('#savedJobs').append(newJobWell); //need to add a remove button
     });
     //******************************copied Dragula code*****************************************
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -79,9 +55,9 @@ $(document).ready(function() {
             el.className = el.className.replace('ex-moved', '');
         }).on('drop', function(el) {
             el.className += ' ex-moved';
-            console.log(el);
+            //this pushes the job well to firebase when the well is dropped but
+            //it will push even if it is dropped in the left container
             var draggedWell = $(el).html();
-            console.log(draggedWell);
             database.ref('jobs').push({
                 jobTitle: draggedWell
             });
@@ -90,10 +66,8 @@ $(document).ready(function() {
         }).on('over', function(el, container) {
             container.className += ' ex-over';
 
-
         }).on('out', function(el, container) {
             container.className = container.className.replace('ex-over', '');
-
 
         });
     //*****************************************************************************************
@@ -113,14 +87,8 @@ $(document).ready(function() {
             crossDomain: true
         }).done(function(response) {
             console.log(response);
-            // I only got the jobtitle for now
-            // I would imagine we'll also want the company(.company),
-            // the description (.snippet), and the url (.url)
-            // console.log(response.results[0].jobtitle);
-            //empties the container of whatever was in it before - maybe we don't do this?
-            // but then we'll have to prepend below instead of appending
+
             $('.resultsTwo').empty()
-                // I made the loop iteratation equal to the # of results specified above
             for (var i = 0; i < 5; i++) {
                 var jobTitle = response.results[i].jobtitle;
                 var company = response.results[i].company;
@@ -128,7 +96,6 @@ $(document).ready(function() {
                 var snippet = response.results[i].snippet;
                 var IndeedCity = response.results[i].city;
                 var IndeedState = response.results[i].state;
-
 
                 //create a bootstrap well
                 var newWell = $('<div class="well"></div>');
@@ -140,7 +107,6 @@ $(document).ready(function() {
                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
                 newWell.append("<br>" + "<strong>Location:  </strong>" + IndeedCity + ", " + IndeedState);
 
-
                 //put the well in the results container
                 $('.resultsTwo').append(newWell);
             }
@@ -148,37 +114,24 @@ $(document).ready(function() {
     }
 
 
-    makeTeleportAjaxRequest();
-    makeIndeedAjaxRequest();
-    makeSalaryAjaxRequest();
-    getPriceOfBeer();
-    getImage();
 
-
+    //*************************************************************************************************************
     $("#searches").on('click', function() {
-        //commented out the line below for now so I don't have to type in a search term every time
         unformattedCity = $("#searchInput option:selected").text();
         lowercaseCity = unformattedCity.toLowerCase();
         city = lowercaseCity.replace(/ /g, "-");
-        // city = noSpaceCity.replace(/./g, "");
-
-        console.log(city);
+        // city = noSpaceCity.replace(/./g, "");    doesn't work
         occupation = "junior+web+developer";
         makeTeleportAjaxRequest();
         makeIndeedAjaxRequest();
         makeSalaryAjaxRequest();
         getPriceOfBeer();
         getImage();
-
-    });
-    $("#searchInput").keyup(function(event) {
-        if (event.keyCode == 13) {
-            $("#search").click();
-            $('#searchInput').val("");
-        }
+        $("#toggle").show();
+        $("#cityInfo").hide();
     });
 
-
+    //******************************************************************************************************************
 
     function makeTeleportAjaxRequest() {
         // this api gets the city scores from teleport - no key needed
@@ -195,7 +148,7 @@ $(document).ready(function() {
             console.log(response);
             //empties the containing div
             $('#resultsOne').empty();
-            //loops through the categories and makes a well for each - maybe we should get rid of some of these
+            //loops through the categories and formats the scores
             for (var j = 0; j < response.categories.length; j++) {
                 var categoryTitle = response.categories[j].name;
                 cityCategoryTitles.push(categoryTitle);
@@ -214,17 +167,9 @@ $(document).ready(function() {
                     barColorArray.push('rgb(12, 76, 178)');
                 }
                 //******************************************************************************************************************
-                var newWell = $('<div class="well"></div>');
-                var newH = $('<h3></h3>');
-                newH.html(categoryTitle + ":   " + newCatScore);
-                newWell.addClass('text-center').append(newH);
-                // $('#resultsOne').append(newWell);
             }
 
             makeChart(); //function that makes the chartjs chart
-
-
-
         });
     }
 
@@ -235,7 +180,6 @@ $(document).ready(function() {
             url: salaryURL,
             method: "GET"
         }).done(function(response) {
-            // console.log(response);
             //I used the position in the array for web developer             
             var newJobTitle = response.salaries[51].job.title;
             var salary = response.salaries[51].salary_percentiles.percentile_50;
@@ -257,9 +201,7 @@ $(document).ready(function() {
 
             var avgHighC = response.categories[2].data[5].string_value;
             var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
-            $('#temp').html("Avg. temerature high: " + avgHighF);
-
-
+            $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
         });
     }
 
@@ -315,6 +257,71 @@ $(document).ready(function() {
     }
 
 
+
+    //Code from Firebase to add functionality to allow users to signup w/email & password
+    function toggleSignIn() {
+        if (firebase.auth().currentUser) {
+            // [START signout]
+            firebase.auth().signOut();
+            // [END signout]
+        } else {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            if (email.length < 4) {
+                alert('Please enter an email address.');
+                return;
+            }
+            if (password.length < 4) {
+                alert('Please enter a password.');
+                return;
+            }
+            // Sign in with email and pass.
+            // [START authwithemail]
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode === 'auth/wrong-password') {
+                    alert('Wrong password.');
+                } else {
+                    alert(errorMessage);
+                }
+                console.log(error);
+                document.getElementById('quickstart-sign-in').disabled = false;
+            });
+        }
+    }
+
+    function handleSignUp() {
+        // var email = document.getElementById('email').value;
+        // var password = document.getElementById('password').value;
+        if (email.length < 4) {
+            alert('Please enter an email address.');
+            return;
+        }
+        if (password.length < 4) {
+            alert('Please enter a password.');
+            return;
+        }
+        // Sign in with email and pass.
+        // [START createwithemail]
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode == 'auth/weak-password') {
+                alert('The password is too weak.');
+            } else {
+                alert(errorMessage);
+            }
+            console.log(error);
+            // [END_EXCLUDE]
+        })
+    };
+
+
     for (k = 0; k < newListOfCities.length; k++) {
         var newOptions = $("<option></option>");
         newOptions.attr("value", newListOfCities[k]);
@@ -323,13 +330,34 @@ $(document).ready(function() {
     };
     //****************************************************************
 
+    //      //Show/Hide the city info with the button created once the search on click runs
+    $("#toggle").on('click', function() {
+        if ($("#cityInfo").is(":visible")) {
+            $("#cityInfo").hide();
+            $('#jobInfo').show();
+        } else {
+            $("#cityInfo").show();
+            $('#jobInfo').hide();
+        };
+    });
+
+    //Show the search options/button once user is logged in
+    $("#logIn").on("click", function() {
+        $(".search").show();
+        $(".logIn").hide();
+        email = $("#email").val().trim();
+        password = $("#password").val().trim();
+        console.log("email: " + email);
+        console.log("password: " + password);
+        handleSignUp();
+
+    });
 
 
-
-
-
-
-
-
+    makeTeleportAjaxRequest();
+    makeIndeedAjaxRequest();
+    makeSalaryAjaxRequest();
+    getPriceOfBeer();
+    getImage();
 
 });

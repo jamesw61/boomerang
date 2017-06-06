@@ -10,21 +10,11 @@ body {
 .city {
     height:35px;
     width:200px;
-    /*border-radius: 25px;*/
+    margin-top: 10px;
 }
 
 header {
     margin-bottom: 10px;
-}
-
-.resultsOne {
-    padding-top: 20px;
-    background-color: 	#aaa;
-    height: 600px;
-    min-height: 80px;
-    height: auto;
-    margin-left: 10px;
-   
 }
 
 .resultsTwo {
@@ -54,7 +44,7 @@ header {
 	width: 100%;
     /*color: white;*/
     background-size: cover;
-    min-height: 400px;
+    min-height: 300px;
     background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
     margin-bottom: 0;
 }
@@ -74,6 +64,9 @@ input {
 	margin-bottom: 10px;
 }
 
+#cityInfo{
+	margin: 0% 3% 2% 3%;
+}
 .navbar {
     margin-top: 0;
     height: 80px;
@@ -84,3 +77,8 @@ input {
 .label {
     height: 20px;
 }
+
+.logIn {
+    display: inline-block;
+}
+
