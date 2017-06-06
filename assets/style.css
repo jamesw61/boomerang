@@ -7,6 +7,12 @@ body {
 	width: 100%;
 }
 
+.city {
+    height:35px;
+    width:200px;
+    /*border-radius: 25px;*/
+}
+
 header {
     margin-bottom: 10px;
 }
@@ -46,7 +52,7 @@ header {
 
 .header {
 	width: 100%;
-    color: white;
+    /*color: white;*/
     background-size: cover;
     min-height: 400px;
     background-image: url(https://d13k13wj6adfdf.cloudfront.net/urban_areas/phoenix_web-92224752db.jpg);
@@ -61,6 +67,7 @@ input {
 .jumbotron {
 	margin-top: 20px;
     background-color: rgba(0, 0, 0, 0.5);
+    color:white;
 }
 
 #save {
@@ -69,8 +76,9 @@ input {
 
 .navbar {
     margin-top: 0;
-    height: 40px;
-    background-color: black;
+    height: 80px;
+    color:white;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .label {
