@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     var city = "phoenix";
     var occupation = "junior+web+developer";
@@ -49,7 +48,23 @@ $(document).ready(function() {
         var storedJobTitle = storedJobs.jobTitle;
         var newJobWell = $('<div class="well"></div>');
         newJobWell.html(storedJobTitle);
-        $('#savedJobs').append(newJobWell); //need to add a remove button
+        //adds a remove button to each jobwell
+        var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        newJobWell.append(removeButton);
+        //gets the firebase key so we can remove the jobwell
+        var FbKey = snapshot.key;
+        newJobWell.attr('value', FbKey);
+        $('#savedJobs').append(newJobWell);
+    });
+
+    //  Remove saved jobs from firebase and from the 'savedJobs' container
+    // 'this' is the button clicked
+    $("#savedJobs").on("click", '.remove', function() {
+        var parentWell = $(this).parent();
+        var FirebaseKey = parentWell.attr('value');
+        database.ref('jobs/' + FirebaseKey).remove();
+        parentWell.remove();
+
     });
     //******************************Dragula code*****************************************
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -88,6 +103,7 @@ $(document).ready(function() {
                 var snippet = response.results[i].snippet;
                 var IndeedCity = response.results[i].city;
                 var IndeedState = response.results[i].state;
+                var jobKey = response.results[i].jobkey;
 
                 //create a bootstrap well
                 var newWell = $('<div class="well"></div>');
@@ -98,6 +114,7 @@ $(document).ready(function() {
                 newWell.append("<br>" + "<a href=" + jobUrl + ' target="_blank">Link to job' + "</a>");
                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
                 newWell.append("<br>" + "<strong>Location:  </strong>" + IndeedCity + ", " + IndeedState);
+                newWell.attr('value', jobKey);
 
                 //put the well in the results container
                 $('.resultsTwo').append(newWell);
@@ -244,7 +261,7 @@ $(document).ready(function() {
                     label: unformattedCity,
                     backgroundColor: barColorArray,
                     borderColor: borderColorArray,
-                    borderWidth:1,
+                    borderWidth: 1,
                     data: cityData,
                 }]
             },
