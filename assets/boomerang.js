@@ -103,7 +103,6 @@ $(document).ready(function() {
                 var snippet = response.results[i].snippet;
                 var IndeedCity = response.results[i].city;
                 var IndeedState = response.results[i].state;
-                var jobKey = response.results[i].jobkey;
 
                 //create a bootstrap well
                 var newWell = $('<div class="well"></div>');
@@ -114,7 +113,6 @@ $(document).ready(function() {
                 newWell.append("<br>" + "<a href=" + jobUrl + ' target="_blank">Link to job' + "</a>");
                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
                 newWell.append("<br>" + "<strong>Location:  </strong>" + IndeedCity + ", " + IndeedState);
-                newWell.attr('value', jobKey);
 
                 //put the well in the results container
                 $('.resultsTwo').append(newWell);
@@ -213,7 +211,7 @@ $(document).ready(function() {
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
                     var beerPrice = beerArray[z].currency_dollar_value;
                     // console.log(beerPrice);
-                    $('#beer').html("Avg. price of beer:  $" + beerPrice);
+                    $('#beer').html("Avg. Price of Beer:  $" + beerPrice);
                 }
             }
 
@@ -222,7 +220,7 @@ $(document).ready(function() {
                 if (tempArray[x].id === "WEATHER-AVERAGE-HIGH") {
                     var avgHighC = response.categories[2].data[x].string_value;
                     var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
-                    $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
+                    $('#temp').html("Avg. Temperature High: " + avgHighF + " " + String.fromCharCode(176) + "F");
                 }
 
             }
