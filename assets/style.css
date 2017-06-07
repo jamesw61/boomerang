@@ -23,6 +23,7 @@ header {
     min-height: 180px;
     height: auto;
     margin-left: 10px;
+    margin-top: 10px;
 }
 
 .favorites {
@@ -31,9 +32,11 @@ header {
     min-height: 180px;
     height: auto;
     margin-left: 10px;
+    margin-top: 10px;
 }
 
 .well {
+    position:relative;
     min-height: 80px, 
     color: white;
     height: auto;
@@ -81,5 +84,26 @@ input {
 
 .logIn {
     display: inline-block;
+}
+
+.remove {
+    position:absolute;
+    top: 1px;
+    right: 1px;
+}
+
+.togg{
+    background-color: black;
+    color:white;
+    text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+    height: 26px;
+}
+
+#toggle{
+    font-size: 20px;
+}
+
+.dataContainer {
+    padding-top: 10px;
 }
 

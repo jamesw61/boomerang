@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     var city = "phoenix";
     var occupation = "junior+web+developer";
@@ -49,7 +48,23 @@ $(document).ready(function() {
         var storedJobTitle = storedJobs.jobTitle;
         var newJobWell = $('<div class="well"></div>');
         newJobWell.html(storedJobTitle);
-        $('#savedJobs').append(newJobWell); //need to add a remove button
+        //adds a remove button to each jobwell
+        var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        newJobWell.append(removeButton);
+        //gets the firebase key so we can remove the jobwell
+        var FbKey = snapshot.key;
+        newJobWell.attr('value', FbKey);
+        $('#savedJobs').append(newJobWell);
+    });
+
+    //  Remove saved jobs from firebase and from the 'savedJobs' container
+    // 'this' is the button clicked
+    $("#savedJobs").on("click", '.remove', function() {
+        var parentWell = $(this).parent();
+        var FirebaseKey = parentWell.attr('value');
+        database.ref('jobs/' + FirebaseKey).remove();
+        parentWell.remove();
+
     });
     //******************************Dragula code*****************************************
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
@@ -196,7 +211,7 @@ $(document).ready(function() {
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
                     var beerPrice = beerArray[z].currency_dollar_value;
                     // console.log(beerPrice);
-                    $('#beer').html("Avg. price of beer:  $" + beerPrice);
+                    $('#beer').html("Avg. Price of Beer:  $" + beerPrice);
                 }
             }
 
@@ -205,7 +220,7 @@ $(document).ready(function() {
                 if (tempArray[x].id === "WEATHER-AVERAGE-HIGH") {
                     var avgHighC = response.categories[2].data[x].string_value;
                     var avgHighF = Math.round(avgHighC * 9 / 5 + 32);
-                    $('#temp').html("Avg. temperature high: " + avgHighF + " " + String.fromCharCode(176) + "F");
+                    $('#temp').html("Avg. Temperature High: " + avgHighF + " " + String.fromCharCode(176) + "F");
                 }
 
             }
@@ -244,7 +259,7 @@ $(document).ready(function() {
                     label: unformattedCity,
                     backgroundColor: barColorArray,
                     borderColor: borderColorArray,
-                    borderWidth:1,
+                    borderWidth: 1,
                     data: cityData,
                 }]
             },
