@@ -158,9 +158,7 @@ $(document).ready(function() {
                 var categoryTitle = response.categories[j].name;
                 cityCategoryTitles.push(categoryTitle);
                 var categoryScore = response.categories[j].score_out_of_10;
-                //this cuts off the decimal places - I don't know if this is the best way
-                var roundedScore = Math.floor(categoryScore * 10);
-                var newCatScore = roundedScore / 10;
+                var newCatScore = categoryScore.toFixed(1);
                 cityData.push(newCatScore);
                 //************************************************************************************************  
                 //pushes rgb codes to an array for each score              
@@ -191,7 +189,7 @@ $(document).ready(function() {
             //I used the position in the array for web developer             
             var newJobTitle = response.salaries[51].job.title;
             var salary = response.salaries[51].salary_percentiles.percentile_50;
-            var roundedSalary = Math.round(salary);
+            var roundedSalary = salary.toFixed(0);
             // console.log(roundedSalary);
             $('#salary').html("Median " + newJobTitle + " Salary:   $" + roundedSalary);
         });
@@ -207,7 +205,8 @@ $(document).ready(function() {
             var beerArray = response.categories[3].data;
             for (var z = 0; z < beerArray.length; z++) {
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
-                    var beerPrice = beerArray[z].currency_dollar_value;
+                    var beerPriceX = beerArray[z].currency_dollar_value;
+                    var beerPrice = beerPriceX.toFixed(2);
                     $('#beer').html("Avg. Price of Beer:  $" + beerPrice);
                 }
             }
