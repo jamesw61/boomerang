@@ -242,7 +242,7 @@ $(document).ready(function() {
     //had to reset the canvas to get rid of flicker
     function makeChart() {
         $('#chart').empty().show();
-        var newCanvas = $('<canvas id="myChart" height="100px"></canvas>');
+        var newCanvas = $('<canvas id="myChart" height="75px"></canvas>');
         $('#chart').html(newCanvas);
         var ctx = document.getElementById('myChart').getContext('2d');
         var chart = new Chart(ctx, {
