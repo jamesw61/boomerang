@@ -3,7 +3,7 @@ $(document).ready(function() {
     var occupation = "junior+web+developer";
     var email = "";
     var password = "";
-    var user = "anon";
+    var user = "";
     var ListOfCities = ["Phoenix",
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
@@ -290,9 +290,9 @@ $(document).ready(function() {
             firebase.auth().signOut();
             // [END signout]
         } else {
-            var email = document.getElementById('email').value;
-            console.log(email);
-            var password = document.getElementById('password').value;
+            // email = $("#email").val();
+            // console.log(email);
+            // password = $("#password").val();
             if (email.length < 2) {
                 alert('Please enter an email address.');
                 return;
@@ -315,6 +315,9 @@ $(document).ready(function() {
                 }
                 console.log(error);
                 document.getElementById('quickstart-sign-in').disabled = false;
+                // userNameCreator();
+                var n=email.split("@")[0];
+    			console.log(n);
             });
         }
     }
@@ -344,21 +347,50 @@ $(document).ready(function() {
             }
             console.log(error);
             // [END_EXCLUDE]
-        })
-    };
+        });
+    }
 
     //Show the search options/button once user is logged in
     $("#logIn").on("click", function() {
-        $(".search").show();
-        $(".logIn").hide();
+        // $(".search").show();
+        // $(".logIn").hide();
         email = $("#email").val().trim();
         password = $("#password").val().trim();
         
+       //  user=email.split("@")[0];
+    			// console.log(user);
         console.log("email: " + email);
         console.log("password: " + password);
-        handleSignUp();
+        toggleSignIn();
+        login();
 
     });
+    	firebase.auth().onAuthStateChanged(function(user) {
+    	if(user){
+    	var x = firebase.auth().currentUser.email;
+    	$("#userEmail").html("Welcome, " + x + "    <button class='btn btn-default' id='signOut'>Sign Out</button>");	
+    	user=email.split("@")[0];
+
+    	console.log(user);
+    	}
+    });
+	// firebase.auth().signOut().then(function(){
+ //    		//Sign-out successful.
+ //    		console.log("logged Out");
+ //    	}).catch(function(error){});
+
+    $("#userEmail").on("click", "#signOut", function(){
+    	// firebase.auth().signOut().then(function(){
+    		//Sign-out successful.
+    		firebase.auth.signOut();
+    		console.log("logged Out");
+    	// }).catch(function(error){});
+    });
+    
+    function userNameCreator(){
+    	var user=email.split("@")[0];
+    	console.log(n);
+    }
     //FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
     for (k = 0; k < ListOfCities.length; k++) {
         var newOptions = $("<option></option>");
