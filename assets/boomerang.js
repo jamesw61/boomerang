@@ -382,8 +382,10 @@ $(document).ready(function() {
     $("#userEmail").on("click", "#signOut", function(){
     	// firebase.auth().signOut().then(function(){
     		//Sign-out successful.
-    		firebase.auth.signOut();
+    		firebase.auth().signOut();
+    		var z = firebase.auth().currentUser.email;
     		console.log("logged Out");
+    		console.log(z);
     	// }).catch(function(error){});
     });
     
