@@ -265,6 +265,7 @@ $(document).ready(function() {
                 scales: {
                     xAxes: [{
                         ticks: {
+                            autoSkip: false
                             // this will make the x axis start at 0
                             // beginAtZero: true
                         },
