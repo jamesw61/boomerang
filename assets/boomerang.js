@@ -3,29 +3,30 @@ $(document).ready(function() {
     var occupation = "junior+web+developer";
     var email = "";
     var password = "";
+    var user = "anon";
     var ListOfCities = ["Phoenix",
-        "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin", "Birmingham",
+        "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
         "Buffalo", "Charleston", "Charlotte", "Chattanooga",
         "Chicago", "Cincinnati", "Cleveland", "Colorado Springs", "Columbus",
         "Dallas", "Denver", "Des Moines", "Detroit", "Eugene", "Fort Collins",
-        "Frankfurt", "Honolulu", "Houston", "Indianapolis",
+        "Honolulu", "Houston", "Indianapolis",
         "Jacksonville", "Kansas City", "Knoxville", "Las Vegas",
         "Los Angeles", "Louisville", "Madison", "Memphis",
         "Miami", "Milwaukee", "Minneapolis-Saint Paul", "Nashville",
         "New Orleans", "New York", "Oklahoma City", "Omaha",
-        "Orlando", "Ottawa", "Palo Alto", "Philadelphia",
+        "Orlando", "Palo Alto", "Philadelphia",
         "Pittsburgh", "Portland, ME", "Portland, OR",
         "Providence", "Raleigh", "Richmond", "Rochester",
         "Salt Lake City", "San Antonio", "San Diego", "San Francisco Bay Area",
         "San Juan", "San Luis Obispo", "Seattle",
-        "St. Louis", "Tampa Bay Area", "Washington, D.C.",
+        "St Louis", "Tampa Bay Area", "Washington DC",
     ];
 
     var cityCategoryTitles = []; // pushed from teleport
     var cityData = []; // also from teleport
     var barColorArray = []; // to hold rgb values for chartjs
-    var borderColorArray = [];
+    var borderColorArray = []; // holds rgb values for the border color of each bar in chart
     var unformattedCity = "Phoenix";
 
     var config = {
@@ -40,10 +41,8 @@ $(document).ready(function() {
 
     var database = firebase.database();
 
-    $('#cityInfo').show();
-    $('#jobInfo').hide();
 
-    database.ref('jobs').on("child_added", function(snapshot) {
+    database.ref('jobs/' + user + '/').on("child_added", function(snapshot) {
         var storedJobs = snapshot.val();
         var storedJobTitle = storedJobs.jobTitle;
         var newJobWell = $('<div class="well"></div>');
@@ -62,7 +61,7 @@ $(document).ready(function() {
     $("#savedJobs").on("click", '.remove', function() {
         var parentWell = $(this).parent();
         var FirebaseKey = parentWell.attr('value');
-        database.ref('jobs/' + FirebaseKey).remove();
+        database.ref('jobs/' + user + '/' + FirebaseKey).remove();
         parentWell.remove();
 
     });
@@ -71,7 +70,7 @@ $(document).ready(function() {
         .on('drop', function(el, target, source) {
             if (target != source && source === document.getElementById('resultsTwo')) {
                 var draggedWell = $(el).html();
-                database.ref('jobs').push({
+                database.ref('jobs/' + user).push({
                     jobTitle: draggedWell
                 });
                 $(el).remove();
@@ -159,9 +158,7 @@ $(document).ready(function() {
                 var categoryTitle = response.categories[j].name;
                 cityCategoryTitles.push(categoryTitle);
                 var categoryScore = response.categories[j].score_out_of_10;
-                //this cuts off the decimal places - I don't know if this is the best way
-                var roundedScore = Math.floor(categoryScore * 10);
-                var newCatScore = roundedScore / 10;
+                var newCatScore = categoryScore.toFixed(1);
                 cityData.push(newCatScore);
                 //************************************************************************************************  
                 //pushes rgb codes to an array for each score              
@@ -192,7 +189,7 @@ $(document).ready(function() {
             //I used the position in the array for web developer             
             var newJobTitle = response.salaries[51].job.title;
             var salary = response.salaries[51].salary_percentiles.percentile_50;
-            var roundedSalary = Math.round(salary);
+            var roundedSalary = salary.toFixed(0);
             // console.log(roundedSalary);
             $('#salary').html("Median " + newJobTitle + " Salary:   $" + roundedSalary);
         });
@@ -207,10 +204,9 @@ $(document).ready(function() {
             console.log(response);
             var beerArray = response.categories[3].data;
             for (var z = 0; z < beerArray.length; z++) {
-                // console.log(beerArray[z].id);
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
-                    var beerPrice = beerArray[z].currency_dollar_value;
-                    // console.log(beerPrice);
+                    var beerPriceX = beerArray[z].currency_dollar_value;
+                    var beerPrice = beerPriceX.toFixed(2);
                     $('#beer').html("Avg. Price of Beer:  $" + beerPrice);
                 }
             }
@@ -246,8 +242,7 @@ $(document).ready(function() {
     //had to reset the canvas to get rid of flicker
     function makeChart() {
         $('#chart').empty().show();
-        var newCanvas = $('<canvas id="myChart" height="100px"></canvas>');
-        //I inserted html - is appending better?
+        var newCanvas = $('<canvas id="myChart" height="60px"></canvas>');
         $('#chart').html(newCanvas);
         var ctx = document.getElementById('myChart').getContext('2d');
         var chart = new Chart(ctx, {
@@ -270,6 +265,7 @@ $(document).ready(function() {
                 scales: {
                     xAxes: [{
                         ticks: {
+                            autoSkip: false
                             // this will make the x axis start at 0
                             // beginAtZero: true
                         },
@@ -286,71 +282,84 @@ $(document).ready(function() {
     }
 
 
+    //FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    //Code from Firebase to add functionality to allow users to signup w/email & password
+    function toggleSignIn() {
+        if (firebase.auth().currentUser) {
+            // [START signout]
+            firebase.auth().signOut();
+            // [END signout]
+        } else {
+            var email = document.getElementById('email').value;
+            console.log(email);
+            var password = document.getElementById('password').value;
+            if (email.length < 2) {
+                alert('Please enter an email address.');
+                return;
+            }
+            if (password.length < 2) {
+                alert('Please enter a password.');
+                return;
+            }
+            // Sign in with email and pass.
+            // [START authwithemail]
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode === 'auth/wrong-password') {
+                    alert('Wrong password.');
+                } else {
+                    alert(errorMessage);
+                }
+                console.log(error);
+                document.getElementById('quickstart-sign-in').disabled = false;
+            });
+        }
+    }
 
-    // //Code from Firebase to add functionality to allow users to signup w/email & password
-    // function toggleSignIn() {
-    //     if (firebase.auth().currentUser) {
-    //         // [START signout]
-    //         firebase.auth().signOut();
-    //         // [END signout]
-    //     } else {
-    //         var email = document.getElementById('email').value;
-    //         var password = document.getElementById('password').value;
-    //         if (email.length < 4) {
-    //             alert('Please enter an email address.');
-    //             return;
-    //         }
-    //         if (password.length < 4) {
-    //             alert('Please enter a password.');
-    //             return;
-    //         }
-    //         // Sign in with email and pass.
-    //         // [START authwithemail]
-    //         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    //             // Handle Errors here.
-    //             var errorCode = error.code;
-    //             var errorMessage = error.message;
-    //             // [START_EXCLUDE]
-    //             if (errorCode === 'auth/wrong-password') {
-    //                 alert('Wrong password.');
-    //             } else {
-    //                 alert(errorMessage);
-    //             }
-    //             console.log(error);
-    //             document.getElementById('quickstart-sign-in').disabled = false;
-    //         });
-    //     }
-    // }
+    function handleSignUp() {
+        // var email = document.getElementById('email').value;
+        // var password = document.getElementById('password').value;
+        if (email.length < 4) {
+            alert('Please enter an email address.');
+            return;
+        }
+        if (password.length < 4) {
+            alert('Please enter a password.');
+            return;
+        }
+        // Sign in with email and pass.
+        // [START createwithemail]
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode == 'auth/weak-password') {
+                alert('The password is too weak.');
+            } else {
+                alert(errorMessage);
+            }
+            console.log(error);
+            // [END_EXCLUDE]
+        })
+    };
 
-    // function handleSignUp() {
-    //     // var email = document.getElementById('email').value;
-    //     // var password = document.getElementById('password').value;
-    //     if (email.length < 4) {
-    //         alert('Please enter an email address.');
-    //         return;
-    //     }
-    //     if (password.length < 4) {
-    //         alert('Please enter a password.');
-    //         return;
-    //     }
-    //     // Sign in with email and pass.
-    //     // [START createwithemail]
-    //     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    //         // Handle Errors here.
-    //         var errorCode = error.code;
-    //         var errorMessage = error.message;
-    //         // [START_EXCLUDE]
-    //         if (errorCode == 'auth/weak-password') {
-    //             alert('The password is too weak.');
-    //         } else {
-    //             alert(errorMessage);
-    //         }
-    //         console.log(error);
-    //         // [END_EXCLUDE]
-    //     })
-    // };
+    //Show the search options/button once user is logged in
+    $("#logIn").on("click", function() {
+        $(".search").show();
+        $(".logIn").hide();
+        email = $("#email").val().trim();
+        password = $("#password").val().trim();
+        
+        console.log("email: " + email);
+        console.log("password: " + password);
+        handleSignUp();
 
-
+    });
+    //FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
     for (k = 0; k < ListOfCities.length; k++) {
         var newOptions = $("<option></option>");
         newOptions.attr("value", ListOfCities[k]);
@@ -370,18 +379,8 @@ $(document).ready(function() {
         };
     });
 
-    // //Show the search options/button once user is logged in
-    // $("#logIn").on("click", function() {
-    //     $(".search").show();
-    //     $(".logIn").hide();
-    //     email = $("#email").val().trim();
-    //     password = $("#password").val().trim();
-    //     console.log("email: " + email);
-    //     console.log("password: " + password);
-    //     handleSignUp();
-
-    // });
-
+    $('#cityInfo').show();
+    $('#jobInfo').hide();
 
     makeTeleportAjaxRequest();
     makeIndeedAjaxRequest();

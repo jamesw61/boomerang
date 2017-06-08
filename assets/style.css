@@ -68,7 +68,7 @@ input {
 }
 
 #cityInfo{
-	margin: 0% 3% 2% 3%;
+	/*margin: 0% 0% 2% 3%;*/
 }
 .navbar {
     margin-top: 0;
@@ -103,7 +103,7 @@ input {
     font-size: 20px;
 }
 
-.dataContainer {
+/*.dataContainer {
     padding-top: 10px;
-}
+}*/
 
