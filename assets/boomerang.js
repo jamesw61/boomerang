@@ -40,7 +40,7 @@ $(document).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    
+
 
     // when a user logs on, the email username (before the @) is stored in firebase as userId
     firebase.auth().onAuthStateChanged(function(user) {
@@ -52,6 +52,7 @@ $(document).ready(function() {
             database.ref('users').update({
                 userId: userId
             });
+            console.log("logged in");
         } else {
             // No user is signed in.
             // $('#username').html("No user logged in");
@@ -99,7 +100,7 @@ $(document).ready(function() {
         // });
     });
 
-  function getJobsFromFirebase() { 
+    function getJobsFromFirebase() {
         database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
             console.log(userId);
             var storedJobs = snapshot.val();
@@ -119,7 +120,7 @@ $(document).ready(function() {
             newJobWell.attr('value', FbKey);
             $('#savedJobs').append(newJobWell);
         });
-   } 
+    }
 
 
     $("#logIn").on("click", function() {
@@ -145,13 +146,20 @@ $(document).ready(function() {
     $("#signOut").on("click", "#signOutButton", function() {
         // firebase.auth().signOut().then(function(){
         //Sign-out successful.
-        $('#savedJobs').empty();
-        firebase.auth().signOut();
-        $('#signIn').show();
-        $('#signOut').hide();
+       signOutFromFirebase();
 
         // }).catch(function(error){});
     });
+
+    function signOutFromFirebase() {
+         $('#savedJobs').empty();
+         database.ref('users').update({
+                userId: "anonymous"
+            });
+        firebase.auth().signOut();
+        $('#signIn').show();
+        $('#signOut').hide();
+    }
 
 
     //******************************Dragula code*****************************************
@@ -532,8 +540,9 @@ $(document).ready(function() {
     $('#jobInfo').show();
     $('#signOut').hide();
 
-   firebase.auth().signOut(); //signs out any user when page loads
-   getJobsFromFirebase();
+    // firebase.auth().signOut(); //signs out any user when page loads
+    signOutFromFirebase();
+    getJobsFromFirebase();
     makeTeleportAjaxRequest();
     makeIndeedAjaxRequest();
     makeSalaryAjaxRequest();
