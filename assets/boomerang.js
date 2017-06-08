@@ -20,7 +20,7 @@ $(document).ready(function() {
         "Providence", "Raleigh", "Richmond", "Rochester",
         "Salt Lake City", "San Antonio", "San Diego", "San Francisco Bay Area",
         "San Juan", "San Luis Obispo", "Seattle",
-        "St. Louis", "Tampa Bay Area", "Washington, D.C.",
+        "St Louis", "Tampa Bay Area", "Washington DC",
     ];
 
     var cityCategoryTitles = []; // pushed from teleport
@@ -242,7 +242,7 @@ $(document).ready(function() {
     //had to reset the canvas to get rid of flicker
     function makeChart() {
         $('#chart').empty().show();
-        var newCanvas = $('<canvas id="myChart" height="75px"></canvas>');
+        var newCanvas = $('<canvas id="myChart" height="60px"></canvas>');
         $('#chart').html(newCanvas);
         var ctx = document.getElementById('myChart').getContext('2d');
         var chart = new Chart(ctx, {
