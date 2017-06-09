@@ -4,6 +4,7 @@ $(document).ready(function() {
     var email = "";
     var password = "";
     var user = "";
+
     var ListOfCities = ["Phoenix",
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
@@ -38,45 +39,185 @@ $(document).ready(function() {
         messagingSenderId: "724409226390"
     };
     firebase.initializeApp(config);
-
     var database = firebase.database();
 
 
-    database.ref('jobs/' + user + '/').on("child_added", function(snapshot) {
-        var storedJobs = snapshot.val();
-        var storedJobTitle = storedJobs.jobTitle;
-        var newJobWell = $('<div class="well"></div>');
-        newJobWell.html(storedJobTitle);
-        //adds a remove button to each jobwell
-        var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
-        newJobWell.append(removeButton);
-        //gets the firebase key so we can remove the jobwell
-        var FbKey = snapshot.key;
-        newJobWell.attr('value', FbKey);
-        $('#savedJobs').append(newJobWell);
+
+    // when a user logs on, the email username (before the @) is stored in firebase as userId
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // User is signed in.
+            // $('#username').html(user.email);
+            email = user.email;
+            userId = email.split("@")[0];
+            database.ref('users').update({
+                userId: userId
+            });
+            console.log("logged in");
+        } else {
+            // No user is signed in.
+            // $('#username').html("No user logged in");
+        }
     });
 
-    //  Remove saved jobs from firebase and from the 'savedJobs' container
-    // 'this' is the button clicked
-    $("#savedJobs").on("click", '.remove', function() {
-        var parentWell = $(this).parent();
-        var FirebaseKey = parentWell.attr('value');
-        database.ref('jobs/' + user + '/' + FirebaseKey).remove();
-        parentWell.remove();
 
+    // firebase.auth().onAuthStateChanged(function(user) {
+    //     if(user){
+    //     var x = firebase.auth().currentUser.email;
+    //     $("#userEmail").html("Welcome, " + x + "    <button class='btn btn-default' id='signOut'>Sign Out</button>");   
+    //     user=email.split("@")[0];
+    //     // $('#username').html(user);
+    //     console.log(user);
+    //     }
+    // });
+
+    //when the userId in firebase is updated above....
+    database.ref('users').on("child_changed", function(response) {
+        // local userId is updated with the firebase userId
+        userId = response.val();
+        console.log("userId in users child added    " + userId);
+        $('#savedJobs').empty();
+        getJobsFromFirebase();
+
+        //the savedJobs div is updated with the userId's saved jobs from firebase
+        // database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
+        //     console.log(userId);
+        //     var storedJobs = snapshot.val();
+        //     //sets the firebase generated pushID to FbKey
+        //     var FbKey = snapshot.key;
+        //     var storedJobTitle = storedJobs.jobTitle;
+        //     // console.log(FbKey);
+        //     console.log("fbkey inside jobs child added   " + FbKey);
+        //     var newJobWell = $('<div class="well"></div>');
+        //     // newJobWell.html(storedJobs);
+        //     newJobWell.html(storedJobTitle);
+        //     //adds a remove button to each jobwell
+        //     var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        //     newJobWell.append(removeButton);
+        //     //gets the firebase key so we can remove the jobwell
+        //     // var FbKey = snapshot.key;
+        //     newJobWell.attr('value', FbKey);
+        //     $('#savedJobs').append(newJobWell);
+        // });
     });
+
+    function getJobsFromFirebase() {
+        database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
+            console.log(userId);
+            var storedJobs = snapshot.val();
+            //sets the firebase generated pushID to FbKey
+            var FbKey = snapshot.key;
+            var storedJobTitle = storedJobs.jobTitle;
+            // console.log(FbKey);
+            console.log("fbkey inside jobs child added   " + FbKey);
+            var newJobWell = $('<div class="well"></div>');
+            // newJobWell.html(storedJobs);
+            newJobWell.html(storedJobTitle);
+            //adds a remove button to each jobwell
+            var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+            newJobWell.append(removeButton);
+            //gets the firebase key so we can remove the jobwell
+            // var FbKey = snapshot.key;
+            newJobWell.attr('value', FbKey);
+            $('#savedJobs').append(newJobWell);
+        });
+    }
+
+
+    $("#logIn").on("click", function() {
+        email = $("#email").val().trim();
+        password = $("#password").val().trim();
+        //logs in to firebase
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        });
+        $("#email").val("");
+        $("#password").val("");
+        $('#signIn').hide();
+        $('#signOut').show();
+    });
+
+    // $("#logOut").on("click", function() {
+    //     $('#savedJobs').empty();
+
+    //     firebase.auth().signOut();
+    // });
+
+    $("#signOut").on("click", "#signOutButton", function() {
+        // firebase.auth().signOut().then(function(){
+        //Sign-out successful.
+       signOutFromFirebase();
+
+        // }).catch(function(error){});
+    });
+
+    function signOutFromFirebase() {
+         $('#savedJobs').empty();
+         database.ref('users').update({
+                userId: "anonymous"
+            });
+        firebase.auth().signOut();
+        $('#signIn').show();
+        $('#signOut').hide();
+    }
+
+
     //******************************Dragula code*****************************************
     dragula([document.getElementById('resultsTwo'), document.getElementById('savedJobs')])
         .on('drop', function(el, target, source) {
             if (target != source && source === document.getElementById('resultsTwo')) {
                 var draggedWell = $(el).html();
-                database.ref('jobs/' + user).push({
+
+                database.ref('jobs/' + userId + '/').push({
                     jobTitle: draggedWell
                 });
+
                 $(el).remove();
             }
         });
     //*****************************************************************************************
+
+
+    // return firebase.database().ref('/users/').once('value').then(function(response) {
+    //     userId = response.val();
+    //     console.log(userId);
+    //     // ...
+    //     // userId = "fV3LfEQFqfVFyfvYm9Q8QRBo1nq1";
+    //     // database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
+    //     //     console.log(userId);
+    //     //     var storedJobs = snapshot.val();
+    //     //     console.log(storedJobs);
+    //     //     var FbKey = snapshot.key;
+    //     //     var storedJobTitle = storedJobs.jobTitle;
+    //     //     // console.log(FbKey);
+    //     //     console.log("fbkey inside jobs child added   " + FbKey);
+    //     //     var newJobWell = $('<div class="well"></div>');
+    //     //     // newJobWell.html(storedJobs);
+    //     //     newJobWell.html(storedJobTitle);
+    //     //     //adds a remove button to each jobwell
+    //     //     var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+    //     //     newJobWell.append(removeButton);
+    //     //     //gets the firebase key so we can remove the jobwell
+    //     //     // var FbKey = snapshot.key;
+    //     //     newJobWell.attr('value', FbKey);
+    //     //     $('#savedJobs').append(newJobWell);
+    //     // });
+    // });
+
+    //  Remove saved jobs from firebase and from the 'savedJobs' container
+    // 'this' is the button clicked
+    $("#savedJobs").on("click", '.remove', function() {
+        var parentWell = $(this).parent();
+        console.log(parentWell);
+        var FirebaseKey = parentWell.attr('value');
+        console.log('jobs/' + userId + '/');
+        console.log('jobs/' + userId + '/' + FirebaseKey);
+        database.ref('jobs/' + userId + '/' + FirebaseKey).remove();
+        parentWell.remove();
+
+    });
+
 
     function makeIndeedAjaxRequest() {
         // this URL has james's Indeed.com publisher key
@@ -92,7 +233,7 @@ $(document).ready(function() {
             // this crossDomain key eliminated the need for the cross origin chrome extension
             crossDomain: true
         }).done(function(response) {
-            console.log(response);
+            // console.log(response);
 
             $('.resultsTwo').empty()
             for (var i = 0; i < 5; i++) {
@@ -123,8 +264,8 @@ $(document).ready(function() {
     $("#searches").on('click', function() {
         unformattedCity = $("#searchInput option:selected").text();
         lowercaseCity = unformattedCity.toLowerCase();
-        city = lowercaseCity.replace(/ /g, "-");
-        // city = noSpaceCity.replace(/./g, "");    doesn't work
+        cityX = lowercaseCity.replace(/ /g, "-");
+        city = cityX.replace(/,/g, "");
         occupation = "junior+web+developer";
         makeTeleportAjaxRequest();
         makeIndeedAjaxRequest();
@@ -150,7 +291,7 @@ $(document).ready(function() {
             url: cityscoresURL,
             method: "GET"
         }).done(function(response) {
-            console.log(response);
+            // console.log(response);
             //empties the containing div
             $('#resultsOne').empty();
             //loops through the categories and formats the scores
@@ -201,7 +342,7 @@ $(document).ready(function() {
             url: beerURL,
             method: "GET"
         }).done(function(response) {
-            console.log(response);
+            // console.log(response);
             var beerArray = response.categories[3].data;
             for (var z = 0; z < beerArray.length; z++) {
                 if (beerArray[z].id === "COST-IMPORT-BEER") {
@@ -233,7 +374,7 @@ $(document).ready(function() {
             url: imageURL,
             method: "GET"
         }).done(function(response) {
-            console.log(response);
+            // console.log(response);
             var picURL = response.photos[0].image.web;
             $('.header').css('background-image', 'url(' + picURL + ')');
         });
@@ -266,8 +407,8 @@ $(document).ready(function() {
                     xAxes: [{
                         ticks: {
                             autoSkip: false
-                            // this will make the x axis start at 0
-                            // beginAtZero: true
+                                // this will make the x axis start at 0
+                                // beginAtZero: true
                         },
                         barPercentage: 0.7
                     }],
@@ -284,115 +425,99 @@ $(document).ready(function() {
 
     //FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
     //Code from Firebase to add functionality to allow users to signup w/email & password
-    function toggleSignIn() {
-        if (firebase.auth().currentUser) {
-            // [START signout]
-            firebase.auth().signOut();
-            // [END signout]
-        } else {
-            // email = $("#email").val();
-            // console.log(email);
-            // password = $("#password").val();
-            if (email.length < 2) {
-                alert('Please enter an email address.');
-                return;
-            }
-            if (password.length < 2) {
-                alert('Please enter a password.');
-                return;
-            }
-            // Sign in with email and pass.
-            // [START authwithemail]
-            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // [START_EXCLUDE]
-                if (errorCode === 'auth/wrong-password') {
-                    alert('Wrong password.');
-                } else {
-                    alert(errorMessage);
-                }
-                console.log(error);
-                document.getElementById('quickstart-sign-in').disabled = false;
-                // userNameCreator();
-                var n=email.split("@")[0];
-    			console.log(n);
-            });
-        }
-    }
 
-    function handleSignUp() {
-        // var email = document.getElementById('email').value;
-        // var password = document.getElementById('password').value;
-        if (email.length < 4) {
-            alert('Please enter an email address.');
-            return;
-        }
-        if (password.length < 4) {
-            alert('Please enter a password.');
-            return;
-        }
-        // Sign in with email and pass.
-        // [START createwithemail]
-        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // [START_EXCLUDE]
-            if (errorCode == 'auth/weak-password') {
-                alert('The password is too weak.');
-            } else {
-                alert(errorMessage);
-            }
-            console.log(error);
-            // [END_EXCLUDE]
-        });
-    }
+    // function toggleSignIn() {
+    //     if (firebase.auth().currentUser) {
+    //         // [START signout]
+    //         firebase.auth().signOut();
+    //         // [END signout]
+    //     } else {
+    //         var email = document.getElementById('email').value;
+    //         console.log(email);
+    //         var password = document.getElementById('password').value;
+    //         if (email.length < 2) {
+    //             alert('Please enter an email address.');
+    //             return;
+    //         }
+    //         if (password.length < 2) {
+    //             alert('Please enter a password.');
+    //             return;
+    //         }
+    //         // Sign in with email and pass.
+    //         // [START authwithemail]
+    //         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    //             // Handle Errors here.
+    //             var errorCode = error.code;
+    //             var errorMessage = error.message;
+    //             // [START_EXCLUDE]
+    //             if (errorCode === 'auth/wrong-password') {
+    //                 alert('Wrong password.');
+    //             } else {
+    //                 alert(errorMessage);
+    //             }
+    //             console.log(error);
+    //             document.getElementById('quickstart-sign-in').disabled = false;
+    //         });
+    //     }
+    // }
+
+    // function handleSignUp() {
+    //     // var email = document.getElementById('email').value;
+    //     // var password = document.getElementById('password').value;
+    //     if (email.length < 4) {
+    //         alert('Please enter an email address.');
+    //         return;
+    //     }
+    //     if (password.length < 4) {
+    //         alert('Please enter a password.');
+    //         return;
+    //     }
+    //     // Sign in with email and pass.
+    //     // [START createwithemail]
+    //     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    //         // Handle Errors here.
+    //         var errorCode = error.code;
+    //         var errorMessage = error.message;
+    //         // [START_EXCLUDE]
+    //         if (errorCode == 'auth/weak-password') {
+    //             alert('The password is too weak.');
+    //         } else {
+    //             alert(errorMessage);
+    //         }
+    //         console.log(error);
+    //         // [END_EXCLUDE]
+    //     })
+    // };
 
     //Show the search options/button once user is logged in
-    $("#logIn").on("click", function() {
-        // $(".search").show();
-        // $(".logIn").hide();
-        email = $("#email").val().trim();
-        password = $("#password").val().trim();
-        
-       //  user=email.split("@")[0];
-    			// console.log(user);
-        console.log("email: " + email);
-        console.log("password: " + password);
-        toggleSignIn();
-        login();
+    // $("#logIn").on("click", function() {
+    //     // $(".search").show();
+    //     // $(".logIn").hide();
+    //     email = $("#email").val().trim();
+    //     password = $("#password").val().trim();
 
-    });
-    	firebase.auth().onAuthStateChanged(function(user) {
-    	if(user){
-    	var x = firebase.auth().currentUser.email;
-    	$("#userEmail").html("Welcome, " + x + "    <button class='btn btn-default' id='signOut'>Sign Out</button>");	
-    	user=email.split("@")[0];
+    //     //  user=email.split("@")[0];
+    //     // console.log(user);
+    //     console.log("email: " + email);
+    //     console.log("password: " + password);
+    //     // toggleSignIn();
+    //     // login();
 
-    	console.log(user);
-    	}
-    });
-	// firebase.auth().signOut().then(function(){
- //    		//Sign-out successful.
- //    		console.log("logged Out");
- //    	}).catch(function(error){});
+    // });
 
-    $("#userEmail").on("click", "#signOut", function(){
-    	// firebase.auth().signOut().then(function(){
-    		//Sign-out successful.
-    		firebase.auth().signOut();
-    		var z = firebase.auth().currentUser.email;
-    		console.log("logged Out");
-    		console.log(z);
-    	// }).catch(function(error){});
-    });
-    
-    function userNameCreator(){
-    	var user=email.split("@")[0];
-    	console.log(n);
-    }
+
+
+    // $("#userEmail").on("click", "#signOut", function(){
+    //      // firebase.auth().signOut().then(function(){
+    //          //Sign-out successful.
+    //          firebase.auth().signOut();
+    //          var z = firebase.auth().currentUser.email;
+    //          console.log("logged Out");
+    //          console.log(z);
+    //      // }).catch(function(error){});
+    //  });
+
+
     //FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
     for (k = 0; k < ListOfCities.length; k++) {
         var newOptions = $("<option></option>");
@@ -413,9 +538,13 @@ $(document).ready(function() {
         };
     });
 
-    $('#cityInfo').show();
-    $('#jobInfo').hide();
+    $('#cityInfo').hide();
+    $('#jobInfo').show();
+    $('#signOut').hide();
 
+    // firebase.auth().signOut(); //signs out any user when page loads
+    signOutFromFirebase();
+    getJobsFromFirebase();
     makeTeleportAjaxRequest();
     makeIndeedAjaxRequest();
     makeSalaryAjaxRequest();
