@@ -1,5 +1,6 @@
+
 body {
-	/*background-color: 	#ddd;*/
+	background-color: 	#F4F4F4;
 	
 }
 
@@ -19,20 +20,21 @@ header {
 
 .resultsTwo {
     padding-top: 20px;
-    background-color: 	#aaa;
+    background-color: 	#DCD0C0;
     min-height: 180px;
     height: auto;
     margin-left: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
+    margin-right: 5px;
 }
 
 .favorites {
     padding-top: 20px;
-    background-color: 	#aaa;
+    background-color: 	#DCD0C0;
     min-height: 180px;
     height: auto;
-    margin-left: 10px;
-    margin-top: 10px;
+    margin-left: 15px;
+    margin-top: 20px;
 }
 
 .well {
@@ -40,7 +42,7 @@ header {
     min-height: 80px, 
     color: white;
     height: auto;
-    background-color: #eee;
+    background-color: #;
 }
 
 .header {
@@ -68,14 +70,13 @@ input {
 }
 
 #cityInfo{
-	/*margin: 0% 0% 2% 3%;*/
+
 }
 .navbar {
     margin-top: 0;
     height: 80px;
     color:white;
     text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
-    /*background-color: rgba(0, 0, 0, 0.5);*/
 }
 
 .label {
@@ -101,6 +102,7 @@ input {
 
 #toggle{
     font-size: 20px;
+    background-color: #ddd;
 }
 
 #username {
@@ -108,8 +110,7 @@ input {
     text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
 }
 
-
-/*.dataContainer {
-    padding-top: 10px;
-}*/
+#jobInfo {
+    background-color: #ffefcc;
+}
 

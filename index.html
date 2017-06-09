@@ -16,27 +16,27 @@
     <header class="text-center header">
         <div class="navbar">
             <h1>Relocation Snapshot</h1>
-            <div class="form-group text-left logIn">
-                <div id="signIn">
-                    <label for="email">Email:</label>
-                    <input type="text" id="email">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password">
-                    <button id="logIn" class="btn btn-regular">Log In</button>
-                </div>
-                <div id="signOut">
-                    <button class='btn btn-default' id="signOutButton">Sign Out</button>
-                    <!-- <button id="logOut" class="btn btn-regular">Log Out</button> -->
-                </div>
+            <div id="userEmail" class="form-group text-left logIn">
+                <label for="email">Email:</label>
+                <input type="text" id="email">
+                <label for="password">Password:</label>
+                <input type="password" id="password">
+                <button id="logIn" class="btn btn-regular">Log In</button>
             </div>
+            <div class="row col-md-12" id="userSignOut">
+                <p id="welcome">Welcome, </p>
+                <button class='btn btn-default' id="signOut">Sign Out</button>
+            </div>
+            <br>
         </div>
-        <select class="city" id="searchInput" name="search">
-        </select>
-        <button type="submit" id="searches">Submit</button>
-        <p id="username"></p>
+        
+        <div class="row">
+            <select class="city" id="searchInput" name="search"></select>
+            <button type="submit" class="btn btn-regular" id="searches">Submit</button>
+        </div>
     </header>
     <div class="row togg">
-        <p id="toggle" class="text-center">Show/Hide City Info</p>
+        <p id="toggle" class="text-center">Click to switch between City Info and Job Results</p>
     </div>
     <div id="cityInfo">
         <div class="container-fluid">
@@ -53,7 +53,6 @@
             </div>
         </div>
         <div class="row">
-            <!-- <div class="col-md-1"></div> -->
             <div class="col-md-12">
                 <div id="chart">
                     <canvas id="myChart"></canvas>
@@ -73,7 +72,6 @@
         </div>
     </div>
     <script type="text/javascript" src="assets/boomerang.js"></script>
-    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script> -->
     <script type="text/javascript" src="assets/dragula.js"></script>
 </body>
 
