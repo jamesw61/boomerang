@@ -310,6 +310,14 @@ $(document).ready(function() {
         signOutDiv.show();
     });
 
+    $("#password").keyup(function(event) {
+        if (event.keyCode == 13) {
+            $("#logIn").click();
+            $('#password').val("");
+            $('#email').val("");
+        }
+    });
+
     $("#signOut").on("click", function() {
         signOutFromFirebase();
     });
@@ -338,11 +346,12 @@ $(document).ready(function() {
         makeSalaryAjaxRequest();
         getPriceOfBeer();
         getImage();
-        $("#toggle").show();
+        // $("#toggle").show();
         $("#cityInfo").show();
+        $('#jobInfo').hide();
     });
 
-        //Show/Hide the city info with the button created once the search on click runs
+    //Show/Hide the city info with the button created once the search on click runs
     $("#toggle").on('click', function() {
         if ($("#cityInfo").is(":visible")) {
             $("#cityInfo").hide();
@@ -353,7 +362,7 @@ $(document).ready(function() {
         };
     });
 
-        //creates the drop down menu
+    //creates the drop down menu
     for (k = 0; k < ListOfCities.length; k++) {
         var newOptions = $("<option></option>");
         newOptions.attr("value", ListOfCities[k]);
