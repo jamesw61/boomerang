@@ -40,7 +40,7 @@ header {
     min-height: 80px, 
     color: white;
     height: auto;
-    background-color: #eee;
+    background-color: #;
 }
 
 .header {
@@ -69,6 +69,11 @@ input {
 
 #cityInfo{
 	/*margin: 0% 0% 2% 3%;*/
+	background-color: #eaa;
+}
+#jobInfo{
+	/*margin: 0% 0% 2% 3%;*/
+	background-color: #ffefcc;
 }
 .navbar {
     margin-top: 0;
@@ -101,6 +106,7 @@ input {
 
 #toggle{
     font-size: 20px;
+    background-color: #ddd;
 }
 
 #username {

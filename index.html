@@ -20,22 +20,24 @@
                 <label for="email">Email:</label>
                 <input type="text" id="email">
                 <label for="password">Password:</label>
-                <input type="text" id="password">
+                <input type="password" id="password">
                 <button id="logIn" class="btn btn-regular">Log In</button>
 
             </div>
-            <!-- <div id="userSignOut">
+            <div class="row col-md-12" id="userSignOut">
             	<p id="welcome">Welcome, </p>
-            </div> -->
+            	<button id="signOut" class="btn btn-regular">Signout</button>
+            </div>
             <br>
         </div>
-        <select class="city" id="searchInput" name="search">
-        </select>
-        <button type="submit" class="btn btn-regular" id="searches">Submit</button>
-
+        <div class="row">
+	        <select class="city" id="searchInput" name="search">
+	        </select>
+	        <button type="submit" class="btn btn-regular" id="searches">Submit</button>
+		</div>
     </header>
     <div class="row togg">
-        <p id="toggle" class="text-center">Show/Hide City Info</p>
+        <p id="toggle" class="text-center">Click to switch between city in and job search results</p>
     </div>
     <div id="cityInfo">
         <div class="container-fluid">
@@ -63,7 +65,7 @@
     </div>
     <div id="jobInfo">
         <div class="container-fluid">
-            <div class="panel-default panel col-md-1"></div>
+            <div class="panel-default col-md-1"></div>
             <div class="panel col-md-5 resultsTwo" id="resultsTwo">
             	<div class="panel-body">Job
                 <div class="well"></div>

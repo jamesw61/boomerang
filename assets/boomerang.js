@@ -4,7 +4,9 @@ $(document).ready(function() {
     var email = "";
     var password = "";
     var user = "";
-
+    var userId = "";
+    var signInDiv = $("#userEmail");
+    var signOutDiv = $("#userSignOut");
     var ListOfCities = ["Phoenix",
         "Albuquerque", "Anchorage", "Asheville", "Atlanta", "Austin",
         "Birmingham, AL", "Boise", "Boston", "Boulder", "Bozeman",
@@ -41,7 +43,8 @@ $(document).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-
+    //Hides the signOutDiv by default
+    signOutDiv.hide();
 
     // when a user logs on, the email username (before the @) is stored in firebase as userId
     firebase.auth().onAuthStateChanged(function(user) {
@@ -61,15 +64,19 @@ $(document).ready(function() {
     });
 
 
-    // firebase.auth().onAuthStateChanged(function(user) {
-    //     if(user){
-    //     var x = firebase.auth().currentUser.email;
-    //     $("#userEmail").html("Welcome, " + x + "    <button class='btn btn-default' id='signOut'>Sign Out</button>");   
-    //     user=email.split("@")[0];
-    //     // $('#username').html(user);
-    //     console.log(user);
-    //     }
-    // });
+    firebase.auth().onAuthStateChanged(function(user) {
+    	var signInDiv = $("#userEmail");
+    	var signOutDiv = $("#userSignOut");
+        if(user){
+        signInDiv.hide();
+        signOutDiv.show();
+        $("#welcome").html("Welcome, " + user.email);
+        console.log(user);
+        } else {
+        	signInDiv.show();
+        	signOutDiv.hide();
+        }
+    });
 
     //when the userId in firebase is updated above....
     database.ref('users').on("child_changed", function(response) {
@@ -144,7 +151,7 @@ $(document).ready(function() {
     //     firebase.auth().signOut();
     // });
 
-    $("#signOut").on("click", "#signOutButton", function() {
+    $("#signOut").on("click", function() {
         // firebase.auth().signOut().then(function(){
         //Sign-out successful.
        signOutFromFirebase();
