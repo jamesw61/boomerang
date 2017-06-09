@@ -536,8 +536,8 @@ $(document).ready(function() {
         };
     });
 
-    $('#cityInfo').hide();
-    $('#jobInfo').show();
+    $('#cityInfo').show();
+    $('#jobInfo').hide();
     $('#signOut').hide();
 
     // firebase.auth().signOut(); //signs out any user when page loads
