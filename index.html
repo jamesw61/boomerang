@@ -13,6 +13,12 @@
 </head>
 
 <body>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="errorMessage" class="text-center"></p>
+        </div>
+    </div>
     <header class="text-center header">
         <div class="navbar">
             <h1>RELOCATION SNAPSHOT</h1>
@@ -29,7 +35,6 @@
             </div>
             <br>
         </div>
-        
         <div class="row">
             <select class="city" id="searchInput" name="search"></select>
             <button type="submit" class="btn btn-regular" id="searches">Submit</button>
@@ -65,7 +70,6 @@
         <div class="container-fluid">
             <div class="col-md-1"></div>
             <div class="col-md-5 resultsTwo" id="resultsTwo">
-                
             </div>
             <div class="col-md-5 favorites" id="savedJobs">
             </div>
