@@ -389,8 +389,14 @@ $(document).ready(function() {
                 database.ref('jobs/' + userId + '/').push({
                     jobTitle: draggedWell
                 });
-
                 $(el).remove();
+            }
+            else if (source === document.getElementById('savedJobs') && target != source) {
+                    var draggedWell = $(el);
+                    console.log(el);
+                    var FirebaseKey = draggedWell.attr('value');
+                    database.ref('jobs/' + userId + '/' + FirebaseKey).remove();
+                    $(el).remove();
             }
         });
     //*****************************************************************************************

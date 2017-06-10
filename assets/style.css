@@ -63,8 +63,9 @@ input {
 }
 
 .navbar {
-    font-family: georgia;
-    letter-spacing: 1px;
+    font-family: impact;
+    letter-spacing: 2px;
+    font-weight: bold;
     margin-top: 0;
     height: 80px;
     color:white;
@@ -97,9 +98,10 @@ input {
     background-color: #c4c4c4;
 }
 
-#userEmail {
-    font-family: trebuchet;
+#userEmail, #userSignOut {
+    font-family: arial;
     letter-spacing: 0px;
+    font-size: 16px;
     color: white;
     text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
 }
