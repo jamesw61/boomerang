@@ -310,15 +310,40 @@ $(document).ready(function() {
     $("#logIn").on("click", function() {
         email = $("#email").val().trim();
         password = $("#password").val().trim();
+        signInDiv.hide();
+        signOutDiv.show();
         //logs in to firebase
         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
             var errorCode = error.code;
             var errorMessage = error.message;
+            console.log("code:" + errorCode);
+            var modal = $('#myModal');
+            var span = $('.close');
+
+            if (errorCode === "auth/wrong-password") {
+                $('#errorMessage').html('Wrong Password  ');
+            } else if (errorCode === "auth/user-not-found") {
+                $('#errorMessage').html('User not found  ');
+            }
+            else if (errorCode === "auth/invalid-email") {
+                $('#errorMessage').html('Invalid Email  ');
+            }
+            else {
+                $('#errorMessage').html('Nope  ');
+            }
+            signInDiv.show();
+            signOutDiv.hide();
+
+            modal.show();
+            span.on('click', function() {
+                modal.hide();
+
+            });
+            
         });
         $("#email").val("");
         $("#password").val("");
-        signInDiv.hide();
-        signOutDiv.show();
+
     });
 
     $("#password").keyup(function(event) {
@@ -389,7 +414,12 @@ $(document).ready(function() {
                 database.ref('jobs/' + userId + '/').push({
                     jobTitle: draggedWell
                 });
-
+                $(el).remove();
+            } else if (source === document.getElementById('savedJobs') && target != source) {
+                var draggedWell = $(el);
+                console.log(el);
+                var FirebaseKey = draggedWell.attr('value');
+                database.ref('jobs/' + userId + '/' + FirebaseKey).remove();
                 $(el).remove();
             }
         });
