@@ -152,8 +152,12 @@ $(document).ready(function() {
             // this crossDomain key eliminated the need for the cross origin chrome extension
             crossDomain: true
         }).done(function(response) {
-            // console.log(response);
+            console.log(response);
+            var numberOfResults = response.totalResults;
             $('.resultsTwo').empty()
+            var newLabel = $('<label class="jobsLabel"></label>');
+            newLabel.html("<strong>Job Listings:  " + numberOfResults + "</strong>");
+            $('.resultsTwo').append(newLabel);
             for (var i = 0; i < 5; i++) {
                 var jobTitle = response.results[i].jobtitle;
                 var company = response.results[i].company;
@@ -161,6 +165,7 @@ $(document).ready(function() {
                 var snippet = response.results[i].snippet;
                 var IndeedCity = response.results[i].city;
                 var IndeedState = response.results[i].state;
+
 
                 //create a bootstrap well
                 var newWell = $('<div class="well"></div>');
@@ -172,12 +177,18 @@ $(document).ready(function() {
                 newWell.append("<br>" + "<strong>Description: </strong>" + snippet);
                 newWell.append("<br>" + "<strong>Location:  </strong>" + IndeedCity + ", " + IndeedState);
                 //put the well in the results container
+
                 $('.resultsTwo').append(newWell);
+
             }
         });
     }
 
     function getJobsFromFirebase() {
+        var newLabel_2 = $('<label class="savedLabel"></label>');
+        newLabel_2.html("<strong>Saved Jobs - Drag Here to Save</strong>");
+        $("#savedJobs").append(newLabel_2);
+
         database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
             console.log(userId);
             var storedJobs = snapshot.val();
