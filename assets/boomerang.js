@@ -185,33 +185,38 @@ $(document).ready(function() {
     }
 
     function getJobsFromFirebase() {
-        var newLabel_2 = $('<label class="savedLabel"></label>');
-        newLabel_2.html("<strong>Saved Jobs - Drag Here to Save</strong>");
-        $("#savedJobs").append(newLabel_2);
+    //     var newLabel_2 = $('<label class="savedLabel"></label>');
+    //     newLabel_2.html("<strong>Saved Jobs - Drag Here to Save</strong>");
+    //     $("#savedJobs").append(newLabel_2);
 
-        database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
-            console.log(userId);
-            var storedJobs = snapshot.val();
-            //sets the firebase generated pushID to FbKey
-            var FbKey = snapshot.key;
-            var storedJobTitle = storedJobs.jobTitle;
-            // console.log(FbKey);
-            console.log("fbkey inside jobs child added   " + FbKey);
-            var newJobWell = $('<div class="well"></div>');
-            // newJobWell.html(storedJobs);
-            newJobWell.html(storedJobTitle);
-            //adds a remove button to each jobwell
-            var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
-            newJobWell.append(removeButton);
-            //gets the firebase key so we can remove the jobwell
-            // var FbKey = snapshot.key;
-            newJobWell.attr('value', FbKey);
-            $('#savedJobs').append(newJobWell);
-        });
+    database.ref('jobs/' + userId + '/').on("child_added", function(snapshot) {
+        console.log(userId);
+        var storedJobs = snapshot.val();
+        //sets the firebase generated pushID to FbKey
+        var FbKey = snapshot.key;
+        var storedJobTitle = storedJobs.jobTitle;
+        // console.log(FbKey);
+        console.log("fbkey inside jobs child added   " + FbKey);
+        var newJobWell = $('<div class="well"></div>');
+        // newJobWell.html(storedJobs);
+        newJobWell.html(storedJobTitle);
+        //adds a remove button to each jobwell
+        var removeButton = $('<br><button class="remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        newJobWell.append(removeButton);
+        //gets the firebase key so we can remove the jobwell
+        // var FbKey = snapshot.key;
+        newJobWell.attr('value', FbKey);
+        $('#savedJobs').append(newJobWell);
+
+    });
     }
 
     function signOutFromFirebase() {
         $('#savedJobs').empty();
+        database.ref('jobs/' + userId + '/').off("child_added");
+        var newLabel_2 = $('<label class="savedLabel"></label>');
+        newLabel_2.html("<strong>Saved Jobs - Drag Here to Save</strong>");
+        $("#savedJobs").append(newLabel_2);
         database.ref('users').update({
             userId: "anonymous"
         });
@@ -266,6 +271,7 @@ $(document).ready(function() {
     // when a user logs on, the email username (before the @) is stored in firebase as userId
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
+            database.ref('jobs/' + userId + '/').off("child_added");
             // User is signed in.
             email = user.email;
             userId = email.split("@")[0];
@@ -289,13 +295,18 @@ $(document).ready(function() {
         userId = response.val();
         console.log("userId in users child added    " + userId);
         $('#savedJobs').empty();
+        var newLabel_2 = $('<label class="savedLabel"></label>');
+        newLabel_2.html("<strong>Saved Jobs - Drag Here to Save</strong>");
+        $("#savedJobs").append(newLabel_2);
         getJobsFromFirebase();
+        // database.ref('jobs/' + userId + '/').off("child_added");
     });
 
     $('#cityInfo').show();
     $('#jobInfo').hide();
     // $('#signOut').hide();
     signOutDiv.hide();
+
     // firebase.auth().signOut(); //signs out any user when page loads
     signOutFromFirebase();
     getJobsFromFirebase();
@@ -324,11 +335,9 @@ $(document).ready(function() {
                 $('#errorMessage').html('Wrong Password  ');
             } else if (errorCode === "auth/user-not-found") {
                 $('#errorMessage').html('User not found  ');
-            }
-            else if (errorCode === "auth/invalid-email") {
+            } else if (errorCode === "auth/invalid-email") {
                 $('#errorMessage').html('Invalid Email  ');
-            }
-            else {
+            } else {
                 $('#errorMessage').html('Nope  ');
             }
             signInDiv.show();
@@ -339,7 +348,7 @@ $(document).ready(function() {
                 modal.hide();
 
             });
-            
+
         });
         $("#email").val("");
         $("#password").val("");
